@@ -1,0 +1,1 @@
+echo -e “User-Agent: *\nDisallow: /” > robots.txt

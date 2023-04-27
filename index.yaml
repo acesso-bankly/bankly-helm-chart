@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  helm-chart-test:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2023-04-27T09:58:57.480648323-03:00"
+    description: A Helm chart for Kubernetes
+    digest: fa4e10b64553b19fc18351291fc945a01ff88a7c07d4a2693436f5835b34441d
+    name: helm-chart-test
+    type: application
+    urls:
+    - https://acesso-bankly.github.io/bankly-helm-chart/helm-chart-test-0.1.0.tgz
+    version: 0.1.0
+generated: "2023-04-27T09:58:57.479773605-03:00"
