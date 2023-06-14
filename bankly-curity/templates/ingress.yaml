@@ -1,0 +1,83 @@
+{{- if .Values.ingress.runtime.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "curity.fullname" . }}-ingress
+  labels:
+        {{- include "curity.labels" . | nindent 4 }}
+    {{- if or .Values.ingress.runtime.annotations .Values.ingress.annotations }}
+  annotations:
+      {{- if .Values.ingress.runtime.annotations }}
+        {{- toYaml .Values.ingress.runtime.annotations | nindent 4}}
+      {{- else }}
+        {{- toYaml .Values.ingress.annotations | nindent 4 }}
+      {{- end }}
+    {{- end }}
+spec:
+{{- if .Values.ingress.runtime.secretName }}
+  tls:
+    {{- if .Values.ingress.runtime.secretName }}
+    - hosts:
+      {{- if .Values.ingress.runtime.tlsHost }}
+        - {{ .Values.ingress.runtime.tlsHost }}
+      {{- else }}
+        - {{ .Values.ingress.runtime.host }}
+      {{- end }}
+      secretName: {{ .Values.ingress.runtime.secretName }}
+    {{- end }}
+{{- end }}
+  rules:
+    - host: {{ .Values.ingress.runtime.host }}
+      http:
+        paths:
+          {{- range .Values.ingress.runtime.paths }}
+          - path: {{ . }}
+            pathType: {{ $.Values.ingress.runtime.pathType }}
+            backend:
+              service:
+                name: {{ include "curity.fullname" $ }}-runtime-svc
+                port:
+                  name: http-port
+          {{- end }}
+{{- end }}
+{{- if and .Values.curity.admin.enabled .Values.ingress.admin.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "curity.fullname" . }}-ingress-admin
+  labels:
+        {{- include "curity.labels" . | nindent 4 }}
+    {{- if or .Values.ingress.admin.annotations .Values.ingress.annotations }}
+  annotations:
+      {{- if .Values.ingress.admin.annotations }}
+        {{- toYaml .Values.ingress.admin.annotations | nindent 4 }}
+      {{- else }}
+        {{- toYaml .Values.ingress.annotations | nindent 4 }}
+      {{- end }}
+    {{- end }}
+spec:
+{{- if .Values.ingress.admin.secretName }}
+  tls:
+    {{- if .Values.ingress.admin.secretName }}
+    - hosts:
+      {{- if .Values.ingress.admin.tlsHost }}
+        - {{ .Values.ingress.admin.tlsHost }}
+      {{- else }}
+        - {{ .Values.ingress.admin.host}}
+      {{- end }}
+      secretName: {{ .Values.ingress.admin.secretName }}
+    {{- end }}
+{{- end }}
+  rules:
+    - host: {{ .Values.ingress.admin.host }}
+      http:
+        paths:
+          - path: /
+            pathType: {{ .Values.ingress.admin.pathType }}
+            backend:
+              service:
+                name: {{ include "curity.fullname" . }}-admin-svc
+                port:
+                  name: admin-ui
+{{- end }}

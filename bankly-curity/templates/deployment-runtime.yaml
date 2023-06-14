@@ -1,0 +1,241 @@
+{{- $root := . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "curity.fullname" . }}-runtime
+  labels:
+    {{- include "curity.labels" . | nindent 4 }}
+    role: {{ include "curity.fullname" . }}-runtime
+  {{- with .Values.curity.runtime.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "curity.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      role: {{ include "curity.fullname" . }}-runtime
+  template:
+    metadata:
+      labels:
+        {{- include "curity.labels" . | nindent 8 }}
+        {{- if .Values.curity.runtime.podLabels }}
+              {{- .Values.curity.runtime.podLabels | toYaml | nindent 8 }}
+        {{- end }}
+        role: {{ include "curity.fullname" . }}-runtime
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /metrics
+        prometheus.io/port: {{ include "curity.metricsPort" . | quote }}
+        {{- if .Values.curity.runtime.podAnnotations }}
+              {{- .Values.curity.runtime.podAnnotations | toYaml | nindent 8 }}
+        {{- end }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-runtime
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["/opt/idsvr/bin/idsvr",
+                 "-s", "{{ .Values.curity.runtime.role }}",
+                 {{- if .Values.curity.config.encryptionKey}}"-e","{{.Values.curity.config.encryptionKey}}",{{end -}}
+                 "--no-admin"]
+          env:
+            {{- if .Values.curity.config.encryptionKey }}
+            - name: CONFIG_ENCRYPTION_KEY
+              value: {{ .Values.curity.config.encryptionKey | quote }}
+            {{- end }}
+            - name: STATUS_CMD_PORT
+              value: {{ .Values.curity.healthCheckPort | quote }}
+            - name: LOGGING_LEVEL
+              value: {{ .Values.curity.runtime.logging.level }}
+            {{- range $env := .Values.curity.runtime.extraEnv }}
+            - name: {{ $env.name }}
+              {{- if $env.value }}
+              value: {{ $env.value | quote }}
+              {{- end }}
+              {{- if $env.valueFrom }}
+              valueFrom: {{ $env.valueFrom | toYaml | trim | nindent 16 }}
+              {{- end }}
+            {{- end }}
+          {{- if ( or .Values.curity.config.environmentVariableSecret .Values.curity.config.environmentVariableConfigMap .Values.curity.config.environmentVariableSecrets .Values.curity.config.environmentVariableConfigMaps .Values.curity.config.convertKeystore ) }}
+          envFrom:
+          {{- range $configMap := concat .Values.curity.config.environmentVariableConfigMaps ( list .Values.curity.config.environmentVariableConfigMap ) }}
+          {{- if $configMap }}
+            - configMapRef:
+                name: {{ $configMap | quote }}
+          {{- end }}
+          {{- end }}
+          {{- range $secret := concat .Values.curity.config.environmentVariableSecrets ( list .Values.curity.config.environmentVariableSecret ) }}
+          {{- if $secret }}
+            - secretRef:
+                name: {{ $secret | quote}}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.curity.config.convertKeystore }}
+            - secretRef:
+                name: {{ include "curity.fullname" . }}-convert-ks-secret-envs
+          {{- end }}
+          ports:
+            - name: http-port
+              containerPort: {{ .Values.curity.runtime.deployment.port }}
+              protocol: TCP
+            - name: health-check
+              containerPort: {{ .Values.curity.healthCheckPort }}
+              protocol: TCP
+            - name: metrics
+              containerPort: {{ include "curity.metricsPort" . }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: health-check
+            timeoutSeconds:  {{ .Values.curity.runtime.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.curity.runtime.livenessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.curity.runtime.livenessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.curity.runtime.livenessProbe.initialDelaySeconds }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: health-check
+            timeoutSeconds:  {{ .Values.curity.runtime.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.curity.runtime.readinessProbe.failureThreshold }}
+            successThreshold: {{ .Values.curity.runtime.readinessProbe.successThreshold }}
+            periodSeconds: {{ .Values.curity.runtime.readinessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.curity.runtime.readinessProbe.initialDelaySeconds }}
+          volumeMounts:
+            {{- if .Values.curity.runtime.logging.stdout }}
+            - mountPath: /opt/idsvr/var/log/
+              name: log-volume
+            {{- end }}
+            - mountPath: /opt/idsvr/etc/init/cluster.xml
+              subPath: cluster.xml
+              name: cluster-xml
+              readOnly: true
+            {{- if .Values.curity.config.configurationSecret }}
+            - mountPath: /opt/idsvr/etc/init/config.xml
+              subPath: config.xml
+              name: config
+              readOnly: true
+            {{- end }}
+            {{- if .Values.curity.config.configurationConfigMap }}
+            - mountPath: /opt/idsvr/etc/init/configmap-config.xml
+              subPath: {{ required "\n curity.config.configurationConfigMapItemName required when curity.config.configurationConfigMap is set. " .Values.curity.config.configurationConfigMapItemName }}
+              name: configmap-config
+              readOnly: true
+            {{- end }}
+            {{- range $conf := .Values.curity.config.configuration }}
+            {{- if $conf.configMapRef }}
+            {{- range $confItem := $conf.configMapRef.items }}
+            - mountPath: /opt/idsvr/etc/init/{{ $confItem.path }}
+              subPath: {{ $confItem.path }}
+              name: {{ $conf.configMapRef.name }}-volume
+              readOnly: true
+            {{- end }}
+            {{- end }}
+            {{- if $conf.secretRef }}
+            {{- range $confItem := $conf.secretRef.items }}
+            - mountPath: /opt/idsvr/etc/init/{{ $confItem.path }}
+              subPath: {{ $confItem.path }}
+              name: {{ $conf.secretRef.name }}-volume
+              readOnly: true
+            {{- end }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.curity.runtime.extraVolumeMounts }}
+                    {{- .Values.curity.runtime.extraVolumeMounts | toYaml | nindent 12 }}
+            {{- end }}
+          resources:
+            {{- if .Values.curity.runtime.logging.resources }}
+              {{- toYaml .Values.curity.runtime.logging.resources | nindent 12 }}
+            {{- else }}
+              {{- toYaml .Values.logging.resources | nindent 12 }}
+            {{- end }}
+        {{- if .Values.curity.runtime.logging.stdout }}
+        {{- range .Values.curity.runtime.logging.logs }}
+        - name: {{ . }}
+          image: {{ $root.Values.curity.runtime.logging.image }}
+          command:
+            - "tail"
+            - "-F"
+            - "/log/{{ . | lower }}.log"
+          volumeMounts:
+            - name: log-volume
+              mountPath: /log
+              readOnly: true
+          resources:
+                {{- toYaml $root.Values.logging.resources | nindent 12 }}
+        {{- end }}
+        {{- end }}
+      {{- if .Values.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecret}}
+      {{- end }}
+      volumes:
+        {{- if .Values.curity.runtime.logging.stdout }}
+        - name: log-volume
+          emptyDir: {}
+        {{- end }}
+        - name: cluster-xml
+          secret:
+            secretName: {{ include "curity.fullname" . }}-cluster-config-xml
+            items:
+              - key: cluster-{{ .Release.Revision }}.xml
+                path: cluster.xml
+        {{- if .Values.curity.config.configurationSecret }}
+        - name: config
+          secret:
+            secretName: {{ .Values.curity.config.configurationSecret }}
+            items:
+              - key: {{ required "\n curity.config.configurationSecretItemName required when curity.config.configurationSecret is set. " .Values.curity.config.configurationSecretItemName }}
+                path: config.xml
+        {{- end }}
+        {{- if .Values.curity.config.configurationConfigMap }}
+        - name: configmap-config
+          configMap:
+            name: {{ .Values.curity.config.configurationConfigMap }}
+        {{- end }}
+        {{- range $conf := .Values.curity.config.configuration }}
+        {{- if $conf.configMapRef }}
+        - name: {{ $conf.configMapRef.name }}-volume
+          configMap:
+            name: {{ $conf.configMapRef.name }}
+            items:
+              {{- range $confItem := $conf.configMapRef.items }}
+              - key: {{ if $confItem.key }}{{ $confItem.key }}{{ else }}{{ $confItem.path }}{{ end }}
+                path: {{ $confItem.path }}
+              {{- end }}
+        {{- end }}
+        {{- if $conf.secretRef }}
+        - name: {{ $conf.secretRef.name }}-volume
+          secret:
+            secretName: {{ $conf.secretRef.name }}
+            items:
+              {{- range $confItem := $conf.secretRef.items }}
+              - key: {{ if $confItem.key }}{{ $confItem.key }}{{ else }}{{ $confItem.path }}{{ end }}
+                path: {{ $confItem.path }}
+              {{- end }}
+        {{- end }}
+        {{- end }}
+        {{- if .Values.curity.runtime.extraVolumes }}
+              {{- .Values.curity.runtime.extraVolumes | toYaml | nindent 8 }}
+        {{- end }}
+      serviceAccountName: {{ template "curity.runtime.serviceAccountName" . }}
+      {{- with .Values.curity.runtime.initContainers }}
+      initContainers:
+            {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+            {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+            {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+            {{- toYaml . | nindent 8 }}
+      {{- end }}

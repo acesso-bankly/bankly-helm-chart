@@ -1,0 +1,284 @@
+{{- if .Values.curity.admin.enabled }}
+{{- $root := . -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "curity.fullname" . }}-admin
+  labels:
+    {{- include "curity.labels" . | nindent 4 }}
+    role: {{ include "curity.fullname" . }}-admin
+  {{- with .Values.curity.admin.annotations }}
+  annotations:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "curity.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      role: {{ include "curity.fullname" . }}-admin
+  template:
+    metadata:
+      labels:
+        {{- include "curity.labels" . | nindent 8 }}
+        {{- if .Values.curity.admin.podLabels }}
+              {{- .Values.curity.admin.podLabels | toYaml | nindent 8 }}
+        {{- end }}
+        role: {{ include "curity.fullname" . }}-admin
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /metrics
+        prometheus.io/port: {{ include "curity.metricsPort" . | quote }}
+        {{- if .Values.curity.admin.podAnnotations }}
+              {{- .Values.curity.admin.podAnnotations | toYaml | nindent 8 }}
+        {{- end }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-admin
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["/opt/idsvr/bin/idsvr",
+                 "-s", "{{ .Values.curity.admin.role }}",
+                 "-N", "{{ .Chart.Name }}-admin",
+                 {{- if .Values.curity.config.encryptionKey}}"-e","{{.Values.curity.config.encryptionKey}}",{{end -}}
+                 "--admin"]
+          env:
+            {{- if .Values.curity.config.encryptionKey }}
+            - name: CONFIG_ENCRYPTION_KEY
+              value: {{ .Values.curity.config.encryptionKey | quote }}
+            {{- end }}
+            {{- if .Values.curity.config.skipInstall }}
+            - name: SKIP_INSTALL
+              value: "1"
+            {{- end }}
+            - name: STATUS_CMD_PORT
+              value: {{ .Values.curity.healthCheckPort | quote }}
+            - name: LOGGING_LEVEL
+              value: {{ .Values.curity.admin.logging.level }}
+            - name: ADMIN_UI_HTTP_MODE
+              value: {{ quote .Values.curity.adminUiHttp }}
+          {{- if not (or .Values.curity.config.skipInstall .Values.curity.config.environmentVariableSecrets .Values.curity.config.configuration) }}
+            - name: PASSWORD
+              value: {{ required "\n curity.config.password required! use --set curity.config.password=YOUR_PASSWORD" .Values.curity.config.password | quote }}
+          {{- end }}
+          {{- if .Values.curity.config.backup }}
+            - name: SECRET_NAME
+              value: {{ include "curity.fullname" . }}-config-backup
+          {{- end }}
+          {{- range $env := .Values.curity.admin.extraEnv }}
+            - name: {{ $env.name }}
+              {{- if $env.value }}
+              value: {{ $env.value | quote }}
+              {{- end }}
+            {{- if $env.valueFrom }}
+              valueFrom: {{ $env.valueFrom | toYaml | trim | nindent 16 }}
+            {{- end }}
+          {{- end }}
+          {{- if ( or .Values.curity.config.environmentVariableSecret .Values.curity.config.environmentVariableConfigMap .Values.curity.config.environmentVariableSecrets .Values.curity.config.environmentVariableConfigMaps .Values.curity.config.convertKeystore ) }}
+          envFrom:
+          {{- range $configMap := concat .Values.curity.config.environmentVariableConfigMaps ( list .Values.curity.config.environmentVariableConfigMap ) }}
+          {{- if $configMap }}
+            - configMapRef:
+                name: {{ $configMap | quote }}
+          {{- end }}
+          {{- end }}
+          {{- range $secret := concat .Values.curity.config.environmentVariableSecrets ( list .Values.curity.config.environmentVariableSecret ) }}
+          {{- if $secret }}
+            - secretRef:
+                name: {{ $secret | quote}}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          {{- if .Values.curity.config.convertKeystore }}
+            - secretRef:
+                name: {{ include "curity.fullname" . }}-convert-ks-secret-envs
+          {{- end }}
+          ports:
+            - name: config-port
+              containerPort: {{ .Values.curity.admin.service.port }}
+              protocol: TCP
+            - name: health-check
+              containerPort: {{ .Values.curity.healthCheckPort }}
+              protocol: TCP
+            - name: metrics
+              containerPort: {{ include "curity.metricsPort" . }}
+              protocol: TCP
+          {{- if or .Values.curity.config.uiEnabled (and .Values.ingress.admin.enabled .Values.ingress.admin.enabled) }}
+            - name: admin-ui
+              containerPort: {{ .Values.curity.adminUiPort }}
+              protocol: TCP
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: health-check
+            timeoutSeconds:  {{ .Values.curity.admin.livenessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.curity.admin.livenessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.curity.admin.livenessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.curity.admin.livenessProbe.initialDelaySeconds }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: health-check
+            timeoutSeconds:  {{ .Values.curity.admin.readinessProbe.timeoutSeconds }}
+            failureThreshold: {{ .Values.curity.admin.readinessProbe.failureThreshold }}
+            successThreshold: {{ .Values.curity.admin.readinessProbe.successThreshold }}
+            periodSeconds: {{ .Values.curity.admin.readinessProbe.periodSeconds }}
+            initialDelaySeconds: {{ .Values.curity.admin.readinessProbe.initialDelaySeconds }}
+          volumeMounts:
+            {{- if .Values.curity.admin.logging.stdout }}
+            - mountPath: /opt/idsvr/var/log/
+              name: log-volume
+            {{- end }}
+            - mountPath: /opt/idsvr/etc/init/cluster.xml
+              subPath: cluster.xml
+              name: cluster-xml
+              readOnly: true
+            {{- if .Values.curity.config.backup }}
+            - mountPath: /opt/idsvr/usr/bin/post-commit-scripts/backupConfig.sh
+              subPath: backupConfig.sh
+              name: backup-config-script
+              readOnly: false
+            {{- end }}
+            {{- if .Values.curity.config.configurationSecret }}
+            - mountPath: /opt/idsvr/etc/init/config.xml
+              subPath: config.xml
+              name: config
+              readOnly: true
+            {{- end }}
+            {{- if .Values.curity.config.configurationConfigMap }}
+            - mountPath: /opt/idsvr/etc/init/configmap-config.xml
+              subPath: {{ required "\n curity.config.configurationConfigMapItemName required when curity.config.configurationConfigMap is set. " .Values.curity.config.configurationConfigMapItemName }}
+              name: configmap-config
+              readOnly: true
+            {{- end }}
+            {{- range $conf := .Values.curity.config.configuration }}
+            {{- if $conf.configMapRef }}
+            {{- range $confItem := $conf.configMapRef.items }}
+            - mountPath: /opt/idsvr/etc/init/{{ $confItem.path }}
+              subPath: {{ $confItem.path }}
+              name: {{ $conf.configMapRef.name }}-volume
+              readOnly: true
+            {{- end }}
+            {{- end }}
+            {{- if $conf.secretRef }}
+            {{- range $confItem := $conf.secretRef.items }}
+            - mountPath: /opt/idsvr/etc/init/{{ $confItem.path }}
+              subPath: {{ $confItem.path }}
+              name: {{ $conf.secretRef.name }}-volume
+              readOnly: true
+            {{- end }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.curity.admin.extraVolumeMounts }}
+                    {{- .Values.curity.admin.extraVolumeMounts | toYaml | nindent 12 }}
+            {{- end }}
+          resources:
+           {{- if .Values.curity.admin.resources }}
+               {{- toYaml .Values.curity.admin.resources | nindent 12 }}
+           {{- else }}
+               {{- toYaml .Values.resources | nindent 12 }}
+           {{- end }}
+        {{- if .Values.curity.admin.logging.stdout }}
+        {{- range .Values.curity.admin.logging.logs }}
+        - name: {{ . }}
+          image: {{ $root.Values.curity.admin.logging.image }}
+          command:
+            - "tail"
+            - "-F"
+            - "/log/{{ . | lower }}.log"
+          volumeMounts:
+            - name: log-volume
+              mountPath: /log
+              readOnly: true
+          resources:
+           {{- if .Values.curity.admin.logging.resources }}
+               {{- toYaml .Values.curity.admin.logging.resources | nindent 12 }}
+           {{- else }}
+               {{- toYaml .Values.logging.resources | nindent 12 }}
+           {{- end }}
+        {{- end }}
+        {{- end }}
+      {{- if .Values.image.pullSecret }}
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecret}}
+      {{- end }}
+      volumes:
+        {{- if .Values.curity.admin.logging.stdout }}
+        - name: log-volume
+          emptyDir: {}
+        {{- end }}
+        - name: cluster-xml
+          secret:
+            secretName: {{ include "curity.fullname" . }}-cluster-config-xml
+            items:
+              - key: cluster-{{ .Release.Revision }}.xml
+                path: cluster.xml
+        {{- if .Values.curity.config.configurationSecret }}
+        - name: config
+          secret:
+            secretName: {{ .Values.curity.config.configurationSecret }}
+            items:
+              - key: {{ required "\n curity.config.configurationSecretItemName required when curity.config.configurationSecret is set. " .Values.curity.config.configurationSecretItemName }}
+                path: config.xml
+        {{- end }}
+        {{- if .Values.curity.config.backup }}
+        - name: backup-config-script
+          configMap:
+            name: {{ include "curity.fullname" . }}-backup-config-script
+            defaultMode: 0705
+            items:
+              - key: backupConfig.sh
+                path: backupConfig.sh
+        {{- end -}}
+        {{- if .Values.curity.config.configurationConfigMap }}
+        - name: configmap-config
+          configMap:
+            name: {{ .Values.curity.config.configurationConfigMap }}
+        {{- end }}
+        {{- range $conf := .Values.curity.config.configuration }}
+        {{- if $conf.configMapRef }}
+        - name: {{ $conf.configMapRef.name }}-volume
+          configMap:
+            name: {{ $conf.configMapRef.name }}
+            items:
+              {{- range $confItem := $conf.configMapRef.items }}
+              - key: {{ if $confItem.key }}{{ $confItem.key }}{{ else }}{{ $confItem.path }}{{ end }}
+                path: {{ $confItem.path }}
+              {{- end }}
+        {{- end }}
+        {{- if $conf.secretRef }}
+        - name: {{ $conf.secretRef.name }}-volume
+          secret:
+            secretName: {{ $conf.secretRef.name }}
+            items:
+              {{- range $confItem := $conf.secretRef.items }}
+              - key: {{ if $confItem.key }}{{ $confItem.key }}{{ else }}{{ $confItem.path }}{{ end }}
+                path: {{ $confItem.path }}
+              {{- end }}
+        {{- end }}
+        {{- end }}
+        {{- if .Values.curity.admin.extraVolumes }}
+              {{- .Values.curity.admin.extraVolumes | toYaml | nindent 8 }}
+        {{- end }}
+      {{- if .Values.curity.config.backup }}
+      serviceAccountName: {{ include "curity.fullname" . }}-service-account
+      {{- end }}
+      {{- with .Values.curity.admin.initContainers }}
+      initContainers:
+            {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+            {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+            {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+            {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
