@@ -1,3 +1,5 @@
+# https://medium.com/@mattiaperi/create-a-public-helm-chart-repository-with-github-pages-49b180dbb417
+
 # Curity Helm
 
 ## Introduction
@@ -49,8 +51,9 @@ In the table below you can find information about the parameters that are config
 | Parameter | Description | Default |
 | --------- | ----------- |----------------------------------|
 | `replicaCount` | The number of runtime nodes to be deployed | `1` |
+| `revisionHistoryLimit` | The number of old ReplicaSets to retain to allow rollback | `10` |
 | `image.repository` | Image repository | `curity.azurecr.io/curity/idsvr` |
-| `image.tag` | Image tag | `8.1.0` |
+| `image.tag` | Image tag | `8.3.0` |
 | `image.pullPolicy` | The policy to be applied in the deployment | `IfNotPresent` |
 | `image.pullSecret` | The secret that is used to fetch images from the docker registry | `null` |
 | `nameOverride` | Override the name release name used in labels and selectors. If left blank it will be `idsvr` | `""` |
@@ -60,7 +63,6 @@ In the table below you can find information about the parameters that are config
 | `curity.healthCheckPort` | The port to use for the status server| `4465` |
 | `curity.adminUiPort` | The admin UI and API port. Ignored if `curity.config.uiEnabled=false` and `ingress.admin.enabled=false` | `6749` |
 | `curity.adminUiHttp` | Controls if admin UI will be on http or https mode after installation if enabled. Ignored if `curity.config.uiEnabled=false` | `false` |
-| `curity.admin.enabled` | Whether to have an admin deployment | `{}` |
 | `curity.admin.annotations` | Extra annotations to add to the admin deployment | `{}` |
 | `curity.admin.podLabels` | Extra labels to add to the admin pod | `{}` |
 | `curity.admin.podAnnotations` | Extra annotations to add to the admin pod | `{}` |
@@ -116,6 +118,7 @@ In the table below you can find information about the parameters that are config
 | `curity.runtime.logging.logs` | Array of the extra containers that will be included in the runtime pods | `[]` |
 | `curity.runtime.logging.image` | The image that will be used to create the logging containers | `busybox:latest` |
 | `curity.runtime.logging.resources` | Resource limits applied in logging containers. When set overrides `logging.resources` settings only on the runtime nodes. | `{}` |
+| `curity.runtime.resources` | Resource limits applied in runtime deployment. When set overrides `resources` settings only on the runtime nodes. | `{}` |
 | `curity.config.uiEnabled` | Flag to enable/disable the service for Admin UI and Admin REST API, ignored if `ingress.admin.enabled=true` | `false` |
 | `curity.config.password` | The administrator password. Required if `curity.config.skipInstall` is `true` or `curity.config.environmentVariableSecrets` and `curity.config.configuration`is not set | `null` |
 | `curity.config.skipInstall` | If set to `true` the installer script will not run<sup>[3](#f3)</sup> | `false`|
