@@ -1,30 +1,34 @@
+{{- $root := . -}}
+{{- range $key, $arrayValue := .Values.curity.runtimes }}
+
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "curity.fullname" . }}-runtime-svc
+  name: {{ include "curity.fullname" $root }}-runtime-svc
   labels:
-    {{- include "curity.labels" . | nindent 4 }}
-    role: {{ include "curity.fullname" . }}-runtime
-  {{- with .Values.curity.runtime.service.annotations }}
+    {{- include "curity.labels" $root | nindent 4 }}
+    role: {{ include "curity.fullname" $root }}-runtime
+  {{- with $arrayValue.service.annotations }}
   annotations:
-  {{- toYaml . | nindent 4 }}
+  {{- toYaml $root | nindent 4 }}
   {{- end }}
 spec:
-  type: {{ .Values.curity.runtime.service.type }}
+  type: {{ $arrayValue.service.type }}
   ports:
-    - port: {{ .Values.curity.runtime.service.port }}
+    - port: {{ $arrayValue.service.port }}
       targetPort: http-port
       protocol: TCP
       name: http-port
-    - port: {{ .Values.curity.healthCheckPort }}
+    - port: {{ $root.Values.curity.healthCheckPort }}
       targetPort: health-check
       protocol: TCP
       name: health-check
-    - port:  {{ include "curity.metricsPort" . }}
+    - port:  {{ include "curity.metricsPort" $root }}
       targetPort: metrics
       protocol: TCP
       name: metrics
   selector:
-    app.kubernetes.io/name: {{ include "curity.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    role: {{ include "curity.fullname" . }}-runtime
+    app.kubernetes.io/name: {{ include "curity.name" $root }}
+    app.kubernetes.io/instance: {{ $root.Release.Name }}
+    role: {{ include "curity.fullname" $root }}-runtime
+{{- end }}

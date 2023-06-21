@@ -68,8 +68,8 @@ curity:
 #        - post-commit-scripts
     resources: {}
 
-  runtime:
-    role: default
+  runtimes:
+  - role: default
     annotations: {}
     podLabels: {}
     podAnnotations: {}
@@ -98,32 +98,18 @@ curity:
       successThreshold: 3
       periodSeconds: 10
       initialDelaySeconds: 30
-# extraEnv provides additional environment variables
-#    extraEnv:
-#      - name: SOME_EXTRA_VARIABLE
-#        value: "extra-variable-value"
-#      - name: SOME_OTHER_EXTRA_VARIABLE_USING_VALUE_FROM
-#        valueFrom:
-#          fieldRef:
-#            fieldPath: status.hostIP
     extraEnv: []
     logging:
       level: INFO
       image: "busybox:latest"
       stdout: false
       logs: []
-#        - audit
-#        - request
-#        - cluster
-#        - confsvc
-#        - confsvc-internal
-#        - post-commit-scripts
       resources: {}
 
   config:
     uiEnabled: false
     backup: false
-    password:
+    password: 'Password1'
     skipInstall: false
     encryptionKey:
     environmentVariableSecrets: []

@@ -2,10 +2,10 @@ apiVersion: v1
 entries:
   idsvr:
   - apiVersion: v1
-    appVersion: 8.3.0
-    created: "2023-06-16T17:30:40.808822268-03:00"
+    appVersion: 8.3.1
+    created: "2023-06-21T14:20:34.093199645-03:00"
     description: A Helm chart for Curity Identity Server
-    digest: 5fcb789e5c429f3fd43fab300336cbbb4382048524f9d0637cb78ff48aa3ced9
+    digest: 0e5db3ffee0a7fe9aad31b17a35c5ca424ff6d448ecd64e9028ec6018554c6c3
     home: https://curity.io
     icon: https://curity.io/images/curity-logo-landscape-white.png
     keywords:
@@ -18,6 +18,6 @@ entries:
     - scim
     name: idsvr
     urls:
-    - https://acesso-bankly.github.io/bankly-helm-chart/idsvr-0.12.6.tgz
-    version: 0.12.6
-generated: "2023-06-16T17:30:40.800413934-03:00"
+    - https://acesso-bankly.github.io/bankly-helm-chart/idsvr-0.12.7.tgz
+    version: 0.12.7
+generated: "2023-06-21T14:20:34.08701757-03:00"
