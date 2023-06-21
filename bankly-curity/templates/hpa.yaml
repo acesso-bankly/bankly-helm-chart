@@ -1,35 +1,40 @@
 {{- if .Values.autoscaling.enabled }}
+{{- $root := . -}}
+
+{{- range $key, $arrayValue := .Values.curity.runtimes }}
+---
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "curity.fullname" . }}
+  name: {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-hpa
   labels:
-    {{- include "curity.labels" . | nindent 4 }}
+    {{- include "curity.labels" $root | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "curity.fullname" . }}-runtime
-  minReplicas: {{ .Values.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+    name: {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime
+  minReplicas: {{ $root.Values.autoscaling.minReplicas }}
+  maxReplicas: {{ $root.Values.autoscaling.maxReplicas }}
   metrics:
-  {{- if .Values.autoscaling.targetMemoryUtilizationPercentage }}
+  {{- if $root.Values.autoscaling.targetMemoryUtilizationPercentage }}
   - type: Resource
     resource:
       name: memory
       target:
         type: Utilization
-        averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
+        averageUtilization: {{ $root.Values.autoscaling.targetMemoryUtilizationPercentage }}
   {{- end }}
-  {{- if .Values.autoscaling.targetCPUUtilizationPercentage }}
+  {{- if $root.Values.autoscaling.targetCPUUtilizationPercentage }}
   - type: Resource
     resource:
       name: cpu
       target:
         type: Utilization
-        averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
+        averageUtilization: {{ $root.Values.autoscaling.targetCPUUtilizationPercentage }}
   {{- end }}
-  {{- if .Values.autoscaling.customMetrics }}
-    {{- .Values.autoscaling.customMetrics | toYaml | nindent 2 }}
+  {{- if $root.Values.autoscaling.customMetrics }}
+    {{- $root.Values.autoscaling.customMetrics | toYaml | nindent 2 }}
   {{- end }}
+{{- end }}
 {{- end }}

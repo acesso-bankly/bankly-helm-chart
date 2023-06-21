@@ -1,13 +1,14 @@
 {{- $root := . -}}
-{{- range $key, $arrayValue := .Values.curity.runtimes }}
 
+{{- range $key, $arrayValue := .Values.curity.runtimes }}
+---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "curity.fullname" $root }}-runtime-svc
+  name: {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime-svc
   labels:
     {{- include "curity.labels" $root | nindent 4 }}
-    role: {{ include "curity.fullname" $root }}-runtime
+    role: {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime
   {{- with $arrayValue.service.annotations }}
   annotations:
   {{- toYaml $root | nindent 4 }}
@@ -30,5 +31,5 @@ spec:
   selector:
     app.kubernetes.io/name: {{ include "curity.name" $root }}
     app.kubernetes.io/instance: {{ $root.Release.Name }}
-    role: {{ include "curity.fullname" $root }}-runtime
+    role: {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime
 {{- end }}

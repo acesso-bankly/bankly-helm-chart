@@ -1,7 +1,7 @@
 {{- $root := . -}}
 
 {{- range $key, $arrayValue := .Values.curity.runtimes }}
-
+---
 {{- if or $arrayValue.podDisruptionBudget.maxUnavailable $arrayValue.podDisruptionBudget.minAvailable }}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -9,7 +9,7 @@ metadata:
   name: {{ include "curity.fullname" $root }}-runtime
   labels:
     {{- include "curity.labels" $root | nindent 4 }}
-    role: {{ include "curity.fullname" $root }}-runtime
+    role: {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime
 spec:
   {{- if $arrayValue.podDisruptionBudget.maxUnavailable }}
   maxUnavailable: {{ $arrayValue.podDisruptionBudget.maxUnavailable }}
@@ -20,6 +20,6 @@ spec:
   selector:
     matchLabels:
       {{- include "curity.labels" $root | nindent 6 }}
-      role: {{ include "curity.fullname" $root }}-runtime
+      role: {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime
 {{- end }}
 {{- end }}

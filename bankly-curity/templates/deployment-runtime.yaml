@@ -1,13 +1,14 @@
 {{- $root := . -}}
 
 {{- range $key, $arrayValue := .Values.curity.runtimes }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime
   labels:
     {{- include "curity.labels" $root | nindent 4 }}
-    role: {{ include "curity.fullname" $root }}-runtime
+    role: {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime
   {{- with $arrayValue.annotations }}
   annotations:
   {{- toYaml . | nindent 4 }}
@@ -21,7 +22,7 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ include "curity.name" $root }}
       app.kubernetes.io/instance: {{ $root.Release.Name }}
-      role: {{ include "curity.fullname" $root }}-runtime
+      role: {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime
   template:
     metadata:
       labels:
@@ -29,7 +30,7 @@ spec:
         {{- if $arrayValue.podLabels }}
               {{- $arrayValue.podLabels | toYaml | nindent 8 }}
         {{- end }}
-        role: {{ include "curity.fullname" $root }}-runtime
+        role: {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/path: /metrics
@@ -198,7 +199,7 @@ spec:
           secret:
             secretName: {{ $root.Values.curity.config.configurationSecret }}
             items:
-              - key: {{ required "\n curity.config.configurationSecretItemName required when curity.config.configurationSecret is set. " .Values.curity.config.configurationSecretItemName }}
+              - key: {{ required "\n curity.config.configurationSecretItemName required when curity.config.configurationSecret is set. " $root.Values.curity.config.configurationSecretItemName }}
                 path: config.xml
         {{- end }}
         {{- if $root.Values.curity.config.configurationConfigMap }}
@@ -231,7 +232,7 @@ spec:
         {{- if $arrayValue.extraVolumes }}
               {{- $arrayValue.extraVolumes | toYaml | nindent 8 }}
         {{- end }}
-      serviceAccountName: default #{{ $arrayValue.serviceAccount.name }}
+      serviceAccountName: {{ $arrayValue.serviceAccount.name | default "default" | quote }}
       {{- with $arrayValue.initContainers }}
       initContainers:
             {{- toYaml $root | nindent 8 }}
