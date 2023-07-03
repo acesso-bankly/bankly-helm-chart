@@ -1,9 +1,20 @@
 apiVersion: v1
 entries:
+  bankly-product:
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2023-07-03T17:46:38.593537-03:00"
+    description: A Helm chart for Kubernetes
+    digest: 1e80c9e29f0e3550657f28b5f247dfcfc4d1d903eaee42d63d07616b2c2405e5
+    name: bankly-product
+    type: application
+    urls:
+    - https://acesso-bankly.github.io/bankly-helm-chart/bankly-product-0.0.1.tgz
+    version: 0.0.1
   idsvr:
   - apiVersion: v1
     appVersion: 8.3.2
-    created: "2023-06-21T16:03:16.40832188-03:00"
+    created: "2023-07-03T17:46:38.597572-03:00"
     description: A Helm chart for Curity Identity Server
     digest: c5035f340bec10861873ddcd24d2218b71ce0a85851147ac85803ea72fd5cdd9
     home: https://curity.io
@@ -20,4 +31,4 @@ entries:
     urls:
     - https://acesso-bankly.github.io/bankly-helm-chart/idsvr-0.12.8.tgz
     version: 0.12.8
-generated: "2023-06-21T16:03:16.402748016-03:00"
+generated: "2023-07-03T17:46:38.592385-03:00"
