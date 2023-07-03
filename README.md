@@ -1,7 +1,7 @@
 # bankly-helm-chart
 
-# https://github.com/acesso-bankly/bankly-helm-chart
-# https://acesso-bankly.github.io/bankly-helm-chart
+[repo](https://github.com/acesso-bankly/bankly-helm-chart)
+[usage link chart](https://acesso-bankly.github.io/bankly-helm-chart)
 
 execute these commands to generate helm chart
 
