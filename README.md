@@ -1,7 +1,7 @@
-# bankly-helm-chart
+### bankly-helm-chart
 
-[repo](https://github.com/acesso-bankly/bankly-helm-chart)
-[usage link chart](https://acesso-bankly.github.io/bankly-helm-chart)
+- [repo](https://github.com/acesso-bankly/bankly-helm-chart)
+- [usage link chart](https://acesso-bankly.github.io/bankly-helm-chart)
 
 execute these commands to generate helm chart
 
@@ -14,7 +14,7 @@ helm repo index --url https://acesso-bankly.github.io/bankly-helm-chart .
 
 ```
 
-# test locally
+### test locally
 
 ```sh
 helm install deploy-bankly-product ./bankly-product --dry-run --debug
