@@ -1,4 +1,4 @@
-{{- if eq .Values.istioGateway true }} 
+{{- if eq .Values.istioGateway.enable true }} 
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
@@ -10,13 +10,13 @@ metadata:
     release: {{ .Release.Name }}
 spec:
   hosts:
-  {{-if eq .Values.enviroment staging }}
+  {{- if eq .Values.enviroment "staging" }}
   - {{.Values.service.name }}.{{ .Values.namespace }}.bankly-stg-aws.internal
   {{- end }}
-  {{-if eq .Values.enviroment sandbox }}
+  {{- if eq .Values.enviroment "sandbox" }}
   - {{.Values.service.name }}.{{ .Values.namespace }}.bankly-sdb-aws.internal
   {{- end }}
-  {{-if eq .Values.enviroment production }}
+  {{- if eq .Values.enviroment "production" }}
   - {{.Values.service.name }}.{{ .Values.namespace }}.bankly-prod-aws.internal
   {{- end }}
   gateways:

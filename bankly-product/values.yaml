@@ -1,6 +1,5 @@
 replicaCount: 1
 namespace: 
-hosted_zone_name:
 
 isCanary: false
 enviroment: staging

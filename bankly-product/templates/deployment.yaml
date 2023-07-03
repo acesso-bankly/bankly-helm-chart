@@ -28,7 +28,7 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
-              containerPort: {{ .Values.service.targetPort }}
+              containerPort: 80
               protocol: TCP
           livenessProbe:
             httpGet:
@@ -74,7 +74,7 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
-              containerPort: {{ .Values.service.targetPort }}
+              containerPort: 80
               protocol: TCP
           livenessProbe:
             httpGet:

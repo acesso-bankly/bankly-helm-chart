@@ -11,8 +11,8 @@ spec:
   type: ClusterIP
   ports:
     - name: http
-      port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
+      port: 80
+      targetPort: 80
       protocol: TCP
   selector:
     app: {{ .Values.service.name }}
