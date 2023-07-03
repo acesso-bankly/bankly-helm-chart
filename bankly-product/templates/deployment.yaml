@@ -1,0 +1,89 @@
+{{- if eq .Values.enviroment "production" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-deployment-canary
+  labels:
+    app: application-bankly
+    helm-package: bankly-product
+    release: {{ .Release.Name }}
+spec:
+  {{- if eq .Values.isCanary true }}
+  replicas: 1
+  {{- else }}
+  replicas: 0
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{ .Values.service.name }}
+  template:
+    metadata:
+      labels:
+         app: {{ .Values.service.name }}
+         version: canary
+    spec:
+      containers:
+        - name: {{ .Values.service.name }}-pod
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+{{- end }}
+---
+{{- if eq .Values.isCanary false }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-deployment
+  labels:
+    app: application-bankly
+    helm-package: bankly-product
+    release: {{ .Release.Name }}
+spec:
+  {{- if eq .Values.enviroment "production" }}
+  replicas: {{ .Values.replicaCount }}
+  {{- else }}
+  replicas: 1
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{ .Values.service.name }}
+  template:
+    metadata:
+      labels:
+         app: {{ .Values.service.name }}
+         {{- if eq .Values.enviroment "production" }}
+         version: safe
+         {{- end}}
+    spec:
+      containers:
+        - name: {{ .Values.service.name }}-pod
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.targetPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+{{- end }}

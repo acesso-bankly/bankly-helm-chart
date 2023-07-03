@@ -1,0 +1,22 @@
+replicaCount: 1
+namespace: default
+
+isCanary: false
+enviroment: staging
+
+service:
+  name: "stepladder"
+  port: 80
+  targetPort: 80
+
+image:
+  repository: ivanmds2/stepladder
+  tag: 1.0.5
+
+resources: 
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
