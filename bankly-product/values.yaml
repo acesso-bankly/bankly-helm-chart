@@ -1,17 +1,16 @@
 replicaCount: 1
-namespace: default
+namespace: 
+hosted_zone_name:
 
 isCanary: false
 enviroment: staging
 
 service:
-  name: "stepladder"
-  port: 80
-  targetPort: 80
+  name: 
 
 image:
-  repository: ivanmds2/stepladder
-  tag: 1.0.5
+  repository: 
+  tag:
 
 resources: 
   limits:
@@ -20,3 +19,7 @@ resources:
   requests:
     cpu: 100m
     memory: 128Mi
+
+istioGateway:
+  enable: false
+  gatewayName:
