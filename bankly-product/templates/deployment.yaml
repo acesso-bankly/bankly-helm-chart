@@ -19,8 +19,8 @@ spec:
   template:
     metadata:
       labels:
-         app: {{ .Values.service.name }}
-         version: canary
+        app: {{ .Values.service.name }}
+        version: canary
     spec:
       containers:
         - name: {{ .Values.service.name }}-pod

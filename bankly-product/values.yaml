@@ -1,15 +1,15 @@
 replicaCount: 1
-namespace: 
+namespace: default
 
 isCanary: false
 enviroment: staging
 
 service:
-  name: 
+  name: default-service
 
 image:
-  repository: 
-  tag:
+  repository: default-repository
+  tag: 0.0.1
 
 resources: 
   limits:
@@ -21,4 +21,3 @@ resources:
 
 istioGateway:
   enable: false
-  gatewayName:
