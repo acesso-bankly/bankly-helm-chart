@@ -1,0 +1,13 @@
+{{- if or (eq .Values.enviroment "production") (eq .Values.enviroment "sandbox") }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ .Values.service.name }}-pdb
+  namespace: {{ .Values.namespace }}
+spec:
+  minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
+  maxUnavailable: {{ .Values.podDisruptionBudget.maxUnavailable }}
+  selector:
+    matchLabels:
+      app: {{ .Values.service.name }}
+{{- end }}

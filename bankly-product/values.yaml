@@ -21,3 +21,7 @@ resources:
 
 istioGateway:
   enable: false
+
+podDisruptionBudget:
+  minAvailable: 2
+  maxUnavailable: 1
