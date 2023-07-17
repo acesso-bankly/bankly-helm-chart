@@ -20,7 +20,7 @@ spec:
   - {{.Values.service.name }}.{{ .Values.namespace }}.bankly-prod-aws.internal
   {{- end }}
   gateways:
-  - {{ .Values.namespace }}-istio-gateway
+  - default-istio-gateway
   http:
   - route:
     - destination:
