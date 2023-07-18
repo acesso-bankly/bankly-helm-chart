@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}-deployment-canary
+  namespace: {{ .Values.namespace }}
   labels:
     app: application-bankly
     helm-package: bankly-product
@@ -47,6 +48,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}-deployment
+  namespace: {{ .Values.namespace }}
   labels:
     app: application-bankly
     helm-package: bankly-product
@@ -57,6 +59,11 @@ spec:
   {{- else }}
   replicas: 1
   {{- end }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0  
   selector:
     matchLabels:
       app: {{ .Values.service.name }}
