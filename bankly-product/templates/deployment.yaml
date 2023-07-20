@@ -26,6 +26,7 @@ spec:
         version: canary
         enviroment: {{ .Values.enviroment  }}
     spec:
+      serviceAccountName: {{ .Values.service.name }}-{{ .Values.enviroment  }}-serviceAccount
       containers:
         - name: {{ .Values.service.name }}-pod
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -76,7 +77,8 @@ spec:
         app: {{ .Values.service.name }}
         version: safe
         enviroment: {{ .Values.enviroment }}
-    spec:
+    spec: 
+      serviceAccountName: {{ .Values.service.name }}-{{ .Values.enviroment  }}-serviceAccount
       containers:
         - name: {{ .Values.service.name }}-pod
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -95,4 +97,5 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+                  
 {{- end }}

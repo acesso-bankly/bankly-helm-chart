@@ -32,5 +32,9 @@ istioGateway:
     attempts: 3
     perTryTimeout: 2s
 
+serviceAccount:
+  enabled: true
+  awsRoleArn: ""
+
 podDisruptionBudget:
   minAvailable: 2
