@@ -36,5 +36,7 @@ serviceAccount:
   enabled: true
   awsRoleArn: ""
 
+configMapData: {}
+
 podDisruptionBudget:
   minAvailable: 2
