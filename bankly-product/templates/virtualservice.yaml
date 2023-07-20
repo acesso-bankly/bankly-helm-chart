@@ -8,21 +8,44 @@ metadata:
     app: application-bankly
     helm-package: bankly-product
     release: {{ .Release.Name }}
+    
 spec:
   hosts:
   {{- if eq .Values.enviroment "staging" }}
   - {{.Values.service.name }}.{{ .Values.namespace }}.bankly-stg-aws.internal
   {{- end }}
+  {{- if eq .Values.enviroment "testing" }}
+  - {{.Values.service.name }}.{{ .Values.namespace }}.bankly-tsg-aws.internal
+  {{- end }}  
   {{- if eq .Values.enviroment "sandbox" }}
   - {{.Values.service.name }}.{{ .Values.namespace }}.bankly-sdb-aws.internal
   {{- end }}
   {{- if eq .Values.enviroment "production" }}
-  - {{.Values.service.name }}.{{ .Values.namespace }}.bankly-prod-aws.internal
+  - {{.Values.service.name }}.{{ .Values.namespace }}.bankly-prd-aws.internal
   {{- end }}
   gateways:
-  - default-istio-gateway
+  - {{ .Values.istioGateway.name }}
   http:
   - route:
     - destination:
-        host: {{ .Values.service.name }}-service
+        host: {{ .Values.service.name }}-{{ .Values.enviroment }}-service
+        subset: safe
+      {{- if eq .Values.isCanary true }}
+      weight: 90
+      {{- end }}
+      {{- if eq .Values.isCanary false }}
+      weight: 100
+      {{- end }}
+    - destination:
+        host: {{ .Values.service.name }}-{{ .Values.enviroment }}-service
+        subset: canary
+      {{- if eq .Values.isCanary true }}
+      weight: 10
+      {{- end }}
+      {{- if eq .Values.isCanary false }}
+      weight: 0
+      {{- end }}
+    retries:
+      attempts: {{ .Values.istioGateway.retries.attempts }}
+      perTryTimeout: {{ .Values.istioGateway.retries.perTryTimeout }}
 {{- end }}

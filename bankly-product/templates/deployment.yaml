@@ -2,12 +2,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-deployment-canary
+  name: {{ .Release.Name }}-{{ .Values.enviroment  }}-deployment-canary
   namespace: {{ .Values.namespace }}
   labels:
     app: application-bankly
     helm-package: bankly-product
     release: {{ .Release.Name }}
+    enviroment: {{ .Values.enviroment  }}
 spec:
   {{- if eq .Values.isCanary true }}
   replicas: 1
@@ -17,11 +18,13 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.service.name }}
+      enviroment: {{ .Values.enviroment  }}
   template:
     metadata:
       labels:
         app: {{ .Values.service.name }}
         version: canary
+        enviroment: {{ .Values.enviroment  }}
     spec:
       containers:
         - name: {{ .Values.service.name }}-pod
@@ -47,12 +50,13 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-deployment
+  name: {{ .Release.Name }}-{{ .Values.enviroment  }}-deployment
   namespace: {{ .Values.namespace }}
   labels:
     app: application-bankly
     helm-package: bankly-product
     release: {{ .Release.Name }}
+    enviroment: {{ .Values.enviroment  }}
 spec:
   {{- if eq .Values.enviroment "production" }}
   replicas: {{ .Values.replicaCount }}
@@ -67,13 +71,13 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.service.name }}
+      enviroment: {{ .Values.enviroment  }}
   template:
     metadata:
       labels:
-         app: {{ .Values.service.name }}
-         {{- if eq .Values.enviroment "production" }}
-         version: safe
-         {{- end}}
+        app: {{ .Values.service.name }}
+        version: safe
+        enviroment: {{ .Values.enviroment }}
     spec:
       containers:
         - name: {{ .Values.service.name }}-pod

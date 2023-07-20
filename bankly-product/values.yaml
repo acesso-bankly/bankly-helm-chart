@@ -21,6 +21,10 @@ resources:
 
 istioGateway:
   enable: false
+  name: "root-platform-istio-gateway"
+  retries:
+    attempts: 3
+    perTryTimeout: 2s
 
 podDisruptionBudget:
   minAvailable: 2
