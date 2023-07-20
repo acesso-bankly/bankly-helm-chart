@@ -58,10 +58,8 @@ metadata:
     release: {{ .Release.Name }}
     enviroment: {{ .Values.enviroment  }}
 spec:
-  {{- if eq .Values.enviroment "production" }}
+  {{- if or (eq .Values.enviroment "staging") (eq .Values.enviroment "testing") }}
   replicas: {{ .Values.replicaCount }}
-  {{- else }}
-  replicas: 1
   {{- end }}
   strategy:
     type: RollingUpdate
