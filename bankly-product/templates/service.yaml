@@ -17,3 +17,5 @@ spec:
       protocol: TCP
   selector:
     app: {{ .Values.service.name }}
+    enviroment: {{ .Values.enviroment  }}
+    
