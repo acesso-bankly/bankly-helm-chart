@@ -11,7 +11,7 @@ image:
   repository: default-repository
   tag: 0.0.1
 
-resources: 
+resources:
   limits:
     cpu: 200m
     memory: 256Mi
@@ -19,9 +19,24 @@ resources:
     cpu: 100m
     memory: 128Mi
 
+hpa:
+  cpuAverageUtilization: 70
+  memoryAverageUtilization: 70
+  minReplicas: 2
+  maxReplicas: 15
+
 istioGateway:
   enable: false
+  name: "root-platform-istio-gateway"
+  retries:
+    attempts: 3
+    perTryTimeout: 2s
+
+serviceAccount:
+  enabled: true
+  awsRoleArn: ""
+
+configMapData: {}
 
 podDisruptionBudget:
   minAvailable: 2
-  maxUnavailable: 1

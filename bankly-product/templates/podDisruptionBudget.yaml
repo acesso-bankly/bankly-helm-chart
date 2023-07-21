@@ -6,7 +6,6 @@ metadata:
   namespace: {{ .Values.namespace }}
 spec:
   minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
-  maxUnavailable: {{ .Values.podDisruptionBudget.maxUnavailable }}
   selector:
     matchLabels:
       app: {{ .Values.service.name }}

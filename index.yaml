@@ -2,10 +2,20 @@ apiVersion: v1
 entries:
   bankly-product:
   - apiVersion: v2
-    appVersion: 0.0.3
-    created: "2023-07-17T15:45:41.869482738-03:00"
+    appVersion: 0.0.4
+    created: "2023-07-21T10:49:08.707384728-03:00"
     description: A Helm chart for Kubernetes
-    digest: 4833e1be5c6240d317950e3380bebf55981e134260979770c8b2d0a713827010
+    digest: aef6268e54940020b46fb5581d1ba36cbb79c5dbbc3894add21d1e4eb19ed55c
+    name: bankly-product
+    type: application
+    urls:
+    - https://acesso-bankly.github.io/bankly-helm-chart/bankly-product-0.0.4.tgz
+    version: 0.0.4
+  - apiVersion: v2
+    appVersion: 0.0.3
+    created: "2023-07-21T10:49:08.694110372-03:00"
+    description: A Helm chart for Kubernetes
+    digest: d11fb9520e56cd6de199b33e833562a1facc80a0e6389f87e49648fbe84cedf8
     name: bankly-product
     type: application
     urls:
@@ -13,7 +23,7 @@ entries:
     version: 0.0.3
   - apiVersion: v2
     appVersion: 0.0.2
-    created: "2023-07-17T15:45:41.854676544-03:00"
+    created: "2023-07-21T10:49:08.678217158-03:00"
     description: A Helm chart for Kubernetes
     digest: 6c40fb152e4d77b52a54f9f62c4da84445c1520404a2a8e8356eba371c789ed2
     name: bankly-product
@@ -23,7 +33,7 @@ entries:
     version: 0.0.2
   - apiVersion: v2
     appVersion: 0.0.1
-    created: "2023-07-17T15:45:41.840534721-03:00"
+    created: "2023-07-21T10:49:08.664514409-03:00"
     description: A Helm chart for Kubernetes
     digest: f96837a5150e7b0ea4d9f058b0b173a4ce35404b5640ccdf8591a850166b1f90
     name: bankly-product
@@ -34,9 +44,9 @@ entries:
   idsvr:
   - apiVersion: v1
     appVersion: 8.3.2
-    created: "2023-07-17T15:45:41.884762563-03:00"
+    created: "2023-07-21T10:49:08.72241723-03:00"
     description: A Helm chart for Curity Identity Server
-    digest: c5035f340bec10861873ddcd24d2218b71ce0a85851147ac85803ea72fd5cdd9
+    digest: 9c9fc8bb77f8bb876658f8efda7015a1f1659c15ad51fef644687738c481fb1b
     home: https://curity.io
     icon: https://curity.io/images/curity-logo-landscape-white.png
     keywords:
@@ -51,4 +61,4 @@ entries:
     urls:
     - https://acesso-bankly.github.io/bankly-helm-chart/idsvr-0.12.8.tgz
     version: 0.12.8
-generated: "2023-07-17T15:45:41.826743537-03:00"
+generated: "2023-07-21T10:49:08.647506494-03:00"

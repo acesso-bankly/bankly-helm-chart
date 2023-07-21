@@ -1,0 +1,14 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: {{ .Values.service.name }}-{{ .Values.enviroment  }}-destinationrules
+  namespace: {{ .Values.namespace }}
+spec:
+  host: {{ .Values.service.name }}-{{ .Values.enviroment  }}-service
+  subsets:
+  - name: safe
+    labels:
+      version: safe
+  - name: canary
+    labels:
+      version: canary
