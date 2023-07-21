@@ -26,7 +26,7 @@ spec:
         version: canary
         enviroment: {{ .Values.enviroment  }}
     spec:
-      serviceAccountName: {{ .Values.service.name }}-{{ .Values.enviroment  }}-serviceAccount
+      serviceAccountName: {{ .Values.service.name }}-{{ .Values.enviroment  }}-serviceaccount
       containers:
         - name: {{ .Values.service.name }}-pod
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -78,7 +78,7 @@ spec:
         version: safe
         enviroment: {{ .Values.enviroment }}
     spec: 
-      serviceAccountName: {{ .Values.service.name }}-{{ .Values.enviroment  }}-serviceAccount
+      serviceAccountName: {{ .Values.service.name }}-{{ .Values.enviroment  }}-serviceaccount
       containers:
         - name: {{ .Values.service.name }}-pod
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
