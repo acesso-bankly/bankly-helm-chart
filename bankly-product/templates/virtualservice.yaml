@@ -26,6 +26,14 @@ spec:
   gateways:
   - {{ .Values.istioGateway.name }}
   http:
+  - match:
+    - headers:
+        x-bkly-release-version:
+          exact: canary
+    route:
+    - destination:
+        host: {{ .Values.service.name }}-{{ .Values.enviroment }}-service
+        subset: canary
   - route:
     - destination:
         host: {{ .Values.service.name }}-{{ .Values.enviroment }}-service
@@ -45,6 +53,7 @@ spec:
       {{- if eq .Values.isCanary false }}
       weight: 0
       {{- end }}
+
     retries:
       attempts: {{ .Values.istioGateway.retries.attempts }}
       perTryTimeout: {{ .Values.istioGateway.retries.perTryTimeout }}

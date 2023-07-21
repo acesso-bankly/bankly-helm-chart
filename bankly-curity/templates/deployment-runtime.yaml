@@ -128,7 +128,7 @@ spec:
             {{- end }}
             {{- if $root.Values.curity.config.configurationConfigMap }}
             - mountPath: /opt/idsvr/etc/init/configmap-config.xml
-              subPath: {{ required "\n curity.config.configurationConfigMapItemName required when curity.config.configurationConfigMap is set. " .Values.curity.config.configurationConfigMapItemName }}
+              subPath: {{ required "\n curity.config.configurationConfigMapItemName required when curity.config.configurationConfigMap is set. "  $root.Values.curity.config.configurationConfigMapItemName }}
               name: configmap-config
               readOnly: true
             {{- end }}

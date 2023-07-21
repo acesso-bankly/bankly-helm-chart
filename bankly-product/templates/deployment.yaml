@@ -31,6 +31,7 @@ spec:
         - name: {{ .Values.service.name }}-pod
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: IfNotPresent
+
           ports:
             - name: http
               containerPort: 80
@@ -45,6 +46,22 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          env:
+          {{- if eq .Values.enviroment "staging" }}
+          {{- toYaml .Values.stagingEnv | nindent 12 }}
+          {{- end }}
+          
+          {{- if eq .Values.enviroment "testing" }}
+          {{- toYaml .Values.testingEnv | nindent 12 }}
+          {{- end }}  
+          
+          {{- if eq .Values.enviroment "sandbox" }}
+          {{- toYaml .Values.sandboxEnv | nindent 12 }}
+          {{- end }}
+          
+          {{- if eq .Values.enviroment "production" }}
+          {{- toYaml .Values.productionEnv | nindent 12 }}
+          {{- end }}        
 {{- end }}
 ---
 {{- if eq .Values.isCanary false }}
@@ -97,5 +114,20 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-                  
+          env:
+          {{- if eq .Values.enviroment "staging" }}
+          {{- toYaml .Values.stagingEnv | nindent 12 }}
+          {{- end }}
+          
+          {{- if eq .Values.enviroment "testing" }}
+          {{- toYaml .Values.testingEnv | nindent 12 }}
+          {{- end }}  
+          
+          {{- if eq .Values.enviroment "sandbox" }}
+          {{- toYaml .Values.sandboxEnv | nindent 12 }}
+          {{- end }}
+          
+          {{- if eq .Values.enviroment "production" }}
+          {{- toYaml .Values.productionEnv | nindent 12 }}
+          {{- end }}
 {{- end }}
