@@ -3,7 +3,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name:  {{ .Values.service.name }}-virtualservice
-  namespace: {{ .Values.namespace }}
+  namespace: {{ .Values.istioGateway.namespace }}
   labels:  
     app: application-bankly
     helm-package: bankly-product
@@ -26,6 +26,7 @@ spec:
   gateways:
   - {{ .Values.istioGateway.name }}
   http:
+  {{- if eq .Values.isCanary true }}
   - match:
     - headers:
         x-bkly-release-version:
@@ -34,6 +35,7 @@ spec:
     - destination:
         host: {{ .Values.service.name }}-{{ .Values.enviroment }}-service
         subset: canary
+  {{- end }}
   - route:
     - destination:
         host: {{ .Values.service.name }}-{{ .Values.enviroment }}-service
@@ -44,15 +46,12 @@ spec:
       {{- if eq .Values.isCanary false }}
       weight: 100
       {{- end }}
+    {{- if eq .Values.isCanary true }}
     - destination:
         host: {{ .Values.service.name }}-{{ .Values.enviroment }}-service
         subset: canary
-      {{- if eq .Values.isCanary true }}
       weight: 10
-      {{- end }}
-      {{- if eq .Values.isCanary false }}
-      weight: 0
-      {{- end }}
+    {{- end }}
 
     retries:
       attempts: {{ .Values.istioGateway.retries.attempts }}

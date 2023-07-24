@@ -28,6 +28,7 @@ hpa:
 istioGateway:
   enable: true
   name: "root-platform-istio-gateway"
+  namespace: "root-platform"
   retries:
     attempts: 3
     perTryTimeout: 2s

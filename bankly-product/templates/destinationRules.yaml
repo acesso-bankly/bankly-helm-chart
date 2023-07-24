@@ -9,6 +9,8 @@ spec:
   - name: safe
     labels:
       version: safe
+  {{- if eq .Values.isCanary true }}
   - name: canary
     labels:
       version: canary
+  {{- end }}
