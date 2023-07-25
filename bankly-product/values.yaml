@@ -19,6 +19,22 @@ resources:
     cpu: 100m
     memory: 128Mi
 
+livenessProbe:
+  httpGet:
+    path: /hc
+    port: 80
+  initialDelaySeconds: 10
+  periodSeconds: 5
+
+readinessProbe:
+  httpGet:
+    path: /hc
+    port: 80
+  initialDelaySeconds: 15
+  periodSeconds: 5
+
+
+
 hpa:
   cpuAverageUtilization: 70
   memoryAverageUtilization: 70
@@ -46,3 +62,4 @@ productionEnv: {}
 
 podDisruptionBudget:
   minAvailable: 2
+

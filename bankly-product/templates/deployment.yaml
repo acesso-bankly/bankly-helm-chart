@@ -33,17 +33,15 @@ spec:
           imagePullPolicy: IfNotPresent
 
           ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
+          - name: http
+            containerPort: 80
+            protocol: TCP
+
           # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
+          # {{- toYaml .Values.livenessProbe | nindent 12 }}
           # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
+          # {{- toYaml .Values.readinessProbe | nindent 12 }}
+
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
@@ -52,37 +50,37 @@ spec:
           - name: SERVICE_VERSION
             value: {{ .Values.image.tag }}
 
-          {{- if eq .Values.enviroment "staging" }}
-          - name: ASPNETCORE_ENVIRONMENT
-            value: "Staging"
-          - name: NODE_ENV
-            value: "staging"
-          {{- toYaml .Values.stagingEnv | nindent 12 }}
-          {{- end }}
+          # {{- if eq .Values.enviroment "staging" }}
+          # - name: ASPNETCORE_ENVIRONMENT
+          #   value: "Staging"
+          # - name: NODE_ENV
+          #   value: "staging"
+          # {{- toYaml .Values.stagingEnv | nindent 12 }}
+          # {{- end }}
           
-          {{- if eq .Values.enviroment "testing" }}
-          - name: ASPNETCORE_ENVIRONMENT
-            value: "Test"
-          - name: NODE_ENV
-            value: "test"          
-          {{- toYaml .Values.testingEnv | nindent 12 }}
-          {{- end }}  
+          # {{- if eq .Values.enviroment "testing" }}
+          # - name: ASPNETCORE_ENVIRONMENT
+          #   value: "Test"
+          # - name: NODE_ENV
+          #   value: "test"          
+          # {{- toYaml .Values.testingEnv | nindent 12 }}
+          # {{- end }}  
           
-          {{- if eq .Values.enviroment "sandbox" }}
-          - name: ASPNETCORE_ENVIRONMENT
-            value: "Sandbox"
-          - name: NODE_ENV
-            value: "sandbox"          
-          {{- toYaml .Values.sandboxEnv | nindent 12 }}
-          {{- end }}
+          # {{- if eq .Values.enviroment "sandbox" }}
+          # - name: ASPNETCORE_ENVIRONMENT
+          #   value: "Sandbox"
+          # - name: NODE_ENV
+          #   value: "sandbox"          
+          # {{- toYaml .Values.sandboxEnv | nindent 12 }}
+          # {{- end }}
           
-          {{- if eq .Values.enviroment "production" }}
-          - name: ASPNETCORE_ENVIRONMENT
-            value: "Production"
-          - name: NODE_ENV
-            value: "production"          
-          {{- toYaml .Values.productionEnv | nindent 12 }}
-          {{- end }}        
+          # {{- if eq .Values.enviroment "production" }}
+          # - name: ASPNETCORE_ENVIRONMENT
+          #   value: "Production"
+          # - name: NODE_ENV
+          #   value: "production"          
+          # {{- toYaml .Values.productionEnv | nindent 12 }}
+          # {{- end }}        
 {{- end }}
 ---
 {{- if eq .Values.isCanary false }}
@@ -118,62 +116,60 @@ spec:
     spec: 
       serviceAccountName: {{ .Values.service.name }}-{{ .Values.enviroment  }}-serviceaccount
       containers:
-        - name: {{ .Values.service.name }}-pod
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
-          imagePullPolicy: IfNotPresent
-          ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-          resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-          env:
-          - name: SERVICE_NAME
-            value: {{ .Values.service.name }}
-          - name: SERVICE_VERSION
-            value: {{ .Values.image.tag }}
+      - name: {{ .Values.service.name }}-pod
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        
+        # livenessProbe:
+        # {{- toYaml .Values.livenessProbe | nindent 12 }}
+        # readinessProbe:
+        # {{- toYaml .Values.readinessProbe | nindent 12 }}
 
-          {{- if eq .Values.enviroment "staging" }}
-          - name: ASPNETCORE_ENVIRONMENT
-            value: "Staging"
-          - name: NODE_ENV
-            value: "staging"
+        resources:
+        {{- toYaml .Values.resources | nindent 12 }}
+        env:
+        - name: SERVICE_NAME
+          value: {{ .Values.service.name }}
+        - name: SERVICE_VERSION
+          value: {{ .Values.image.tag }}
 
-          {{- toYaml .Values.stagingEnv | nindent 12 }}
-          {{- end }}
-          
-          {{- if eq .Values.enviroment "testing" }}
-          - name: ASPNETCORE_ENVIRONMENT
-            value: "Test"
-          - name: NODE_ENV
-            value: "test"          
+        # {{- if eq .Values.enviroment "staging" }}
+        # - name: ASPNETCORE_ENVIRONMENT
+        #   value: "Staging"
+        # - name: NODE_ENV
+        #   value: "staging"
 
-          {{- toYaml .Values.testingEnv | nindent 12 }}
-          {{- end }}  
-          
-          {{- if eq .Values.enviroment "sandbox" }}
-          - name: ASPNETCORE_ENVIRONMENT
-            value: "Sandbox"
-          - name: NODE_ENV
-            value: "sandbox"          
+        # {{- toYaml .Values.stagingEnv | nindent 12 }}
+        # {{- end }}
+        
+        # {{- if eq .Values.enviroment "testing" }}
+        # - name: ASPNETCORE_ENVIRONMENT
+        #   value: "Test"
+        # - name: NODE_ENV
+        #   value: "test"          
 
-          {{- toYaml .Values.sandboxEnv | nindent 12 }}
-          {{- end }}
-          
-          {{- if eq .Values.enviroment "production" }}
-          - name: ASPNETCORE_ENVIRONMENT
-            value: "Production"
-          - name: NODE_ENV
-            value: "production"          
+        # {{- toYaml .Values.testingEnv | nindent 12 }}
+        # {{- end }}  
+        
+        # {{- if eq .Values.enviroment "sandbox" }}
+        # - name: ASPNETCORE_ENVIRONMENT
+        #   value: "Sandbox"
+        # - name: NODE_ENV
+        #   value: "sandbox"          
 
-          {{- toYaml .Values.productionEnv | nindent 12 }}
-          {{- end }}
+        # {{- toYaml .Values.sandboxEnv | nindent 12 }}
+        # {{- end }}
+        
+        # {{- if eq .Values.enviroment "production" }}
+        # - name: ASPNETCORE_ENVIRONMENT
+        #   value: "Production"
+        # - name: NODE_ENV
+        #   value: "production"          
+
+        # {{- toYaml .Values.productionEnv | nindent 12 }}
+        # {{- end }}
 {{- end }}
