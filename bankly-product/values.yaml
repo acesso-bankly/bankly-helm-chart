@@ -1,7 +1,7 @@
 replicaCount: 1
 namespace: default
 
-isCanary: false
+isCanary: true
 enviroment: staging
 
 service:
