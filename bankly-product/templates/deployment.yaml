@@ -58,40 +58,40 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
-          - name: SERVICE_NAME
-            value: {{ .Values.service.name }}
-          - name: SERVICE_VERSION
-            value: {{ .Values.containerImage | split ":" | last }}
+            - name: SERVICE_NAME
+              value: {{ .Values.service.name }}
+            - name: SERVICE_VERSION
+              value: {{ ( splitList ":" .Values.containerImage ) | last }}
 
           {{- if eq .Values.enviroment "staging" }}
-          - name: ASPNETCORE_ENVIRONMENT
-            value: "Staging"
-          - name: NODE_ENV
-            value: "staging"
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Staging"
+            - name: NODE_ENV
+              value: "staging"
           {{- toYaml .Values.stagingEnv | nindent 12 }}
           {{- end }}
           
           {{- if eq .Values.enviroment "testing" }}
-          - name: ASPNETCORE_ENVIRONMENT
-            value: "Test"
-          - name: NODE_ENV
-            value: "test"          
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Test"
+            - name: NODE_ENV
+              value: "test"          
           {{- toYaml .Values.testingEnv | nindent 12 }}
           {{- end }}  
           
           {{- if eq .Values.enviroment "sandbox" }}
-          - name: ASPNETCORE_ENVIRONMENT
-            value: "Sandbox"
-          - name: NODE_ENV
-            value: "sandbox"          
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Sandbox"
+            - name: NODE_ENV
+              value: "sandbox"          
           {{- toYaml .Values.sandboxEnv | nindent 12 }}
           {{- end }}
           
           {{- if or (eq .Values.enviroment "production-region-1") (eq .Values.enviroment "production-region-2") }}
-          - name: ASPNETCORE_ENVIRONMENT
-            value: "Production"
-          - name: NODE_ENV
-            value: "production"          
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"
+            - name: NODE_ENV
+              value: "production"          
           {{- toYaml .Values.productionEnv | nindent 12 }}
           {{- end }}        
 {{- end }}
