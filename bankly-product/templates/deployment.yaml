@@ -1,4 +1,4 @@
-{{- if eq .Values.enviroment "production" }}
+{{- if or (eq .Values.enviroment "production-region-1") (eq .Values.enviroment "production-region-2") }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,40 +26,72 @@ spec:
         version: canary
         enviroment: {{ .Values.enviroment  }}
     spec:
+     
+      {{- if .Values.volumes }}
+      volumes:
+      {{- toYaml .Values.volumes | nindent 12 }}
+      {{- end }}
+
+      {{- if eq .Values.serviceAccount.enabled true }}      
       serviceAccountName: {{ .Values.service.name }}-{{ .Values.enviroment  }}-serviceaccount
+      {{- end }}
       containers:
         - name: {{ .Values.service.name }}-pod
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          image: {{ .Values.containerImage }}
           imagePullPolicy: IfNotPresent
 
           ports:
-            - name: http
-              containerPort: 80
-              protocol: TCP
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
+          - name: http
+            containerPort: 80
+            protocol: TCP
+
+          {{- if .Values.volumeMounts }}
+          volumeMounts:
+          {{- toYaml .Values.volumeMounts | nindent 12 }}     
+          {{- end }}
+          
+          livenessProbe:
+          {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+          {{- toYaml .Values.readinessProbe | nindent 12 }}
+
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:
+            - name: SERVICE_NAME
+              value: {{ .Values.service.name }}
+            - name: SERVICE_VERSION
+              value: {{ ( splitList ":" .Values.containerImage ) | last }}
+
           {{- if eq .Values.enviroment "staging" }}
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Staging"
+            - name: NODE_ENV
+              value: "staging"
           {{- toYaml .Values.stagingEnv | nindent 12 }}
           {{- end }}
           
           {{- if eq .Values.enviroment "testing" }}
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Test"
+            - name: NODE_ENV
+              value: "test"          
           {{- toYaml .Values.testingEnv | nindent 12 }}
           {{- end }}  
           
           {{- if eq .Values.enviroment "sandbox" }}
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Sandbox"
+            - name: NODE_ENV
+              value: "sandbox"          
           {{- toYaml .Values.sandboxEnv | nindent 12 }}
           {{- end }}
           
-          {{- if eq .Values.enviroment "production" }}
+          {{- if or (eq .Values.enviroment "production-region-1") (eq .Values.enviroment "production-region-2") }}
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"
+            - name: NODE_ENV
+              value: "production"          
           {{- toYaml .Values.productionEnv | nindent 12 }}
           {{- end }}        
 {{- end }}
@@ -76,6 +108,7 @@ metadata:
     release: {{ .Release.Name }}
     enviroment: {{ .Values.enviroment  }}
 spec:
+
   {{- if or (eq .Values.enviroment "staging") (eq .Values.enviroment "testing") }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
@@ -94,27 +127,42 @@ spec:
         app: {{ .Values.service.name }}
         version: safe
         enviroment: {{ .Values.enviroment }}
-    spec: 
+    spec:
+      {{- if .Values.volumes }}
+      volumes:
+      {{- toYaml .Values.volumes | nindent 12 }}
+      {{- end }}
+
+      {{- if eq .Values.serviceAccount.enabled true }}      
       serviceAccountName: {{ .Values.service.name }}-{{ .Values.enviroment  }}-serviceaccount
+      {{- end }}
       containers:
         - name: {{ .Values.service.name }}-pod
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          image: {{ .Values.containerImage }}
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
               containerPort: 80
-              protocol: TCP
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
+              protocol: TCP 
+          
+          {{- if .Values.volumeMounts }}
+          volumeMounts:
+          {{- toYaml .Values.volumeMounts | nindent 12 }}     
+          {{- end }}
+
+          livenessProbe:
+          {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+          {{- toYaml .Values.readinessProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+
           env:
+            - name: SERVICE_NAME
+              value: {{ .Values.service.name }}
+            - name: SERVICE_VERSION
+              value: {{ ( splitList ":" .Values.containerImage ) | last }}
+
           {{- if eq .Values.enviroment "staging" }}
           {{- toYaml .Values.stagingEnv | nindent 12 }}
           {{- end }}
@@ -127,7 +175,7 @@ spec:
           {{- toYaml .Values.sandboxEnv | nindent 12 }}
           {{- end }}
           
-          {{- if eq .Values.enviroment "production" }}
+          {{- if or (eq .Values.enviroment "production-region-1") (eq .Values.enviroment "production-region-2") }}
           {{- toYaml .Values.productionEnv | nindent 12 }}
           {{- end }}
 {{- end }}

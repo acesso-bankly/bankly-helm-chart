@@ -1,5 +1,5 @@
 replicaCount: 1
-namespace: default
+namespace: bankly-teste
 
 isCanary: false
 enviroment: staging
@@ -7,9 +7,7 @@ enviroment: staging
 service:
   name: default-service
 
-image:
-  repository: default-repository
-  tag: 0.0.1
+containerImage: ivanmds2/stepladder:1.0.33
 
 resources:
   limits:
@@ -19,14 +17,41 @@ resources:
     cpu: 100m
     memory: 128Mi
 
+livenessProbe:
+  httpGet:
+    path: /hc
+    port: 80
+  initialDelaySeconds: 10
+  periodSeconds: 5
+
+readinessProbe:
+  httpGet:
+    path: /hc
+    port: 80
+  initialDelaySeconds: 15
+  periodSeconds: 5
+
 hpa:
   cpuAverageUtilization: 70
   memoryAverageUtilization: 70
   minReplicas: 2
   maxReplicas: 15
 
+volumes:
+- name: default-service-volume
+  configMap:
+    name: default-service-configmap
+    items:
+    - key: stepladder.config
+      path: stepladder.config
+
+volumeMounts:
+- mountPath: "app/config"
+  name: default-service-volume
+
+
 istioGateway:
-  enable: true
+  enable: false
   name: "root-platform-istio-gateway"
   namespace: "root-platform"
   retries:
@@ -35,14 +60,44 @@ istioGateway:
 
 serviceAccount:
   enabled: true
-  awsRoleArn: ""
+  awsRoleArnStaging: "arn:aws:iam::758565826038:role/staging-core-scouter-role"
+  awsRoleArnTesting: ""
+  awsRoleArnSandbox: ""
+  awsRoleArnProductionRegion1: ""
+  awsRoleArnProductionRegion2: ""
 
-configMapData: {}
+configMapData:
+  stepladder.config: |
+    startup:
+      serviceName: "stepladder-test-curity"
+      serviceVersion: "1.0.0"
+    entrypoints:
+      routes:
+      - route: "hc"
+        method: get
+        enableAnonymous: true
+        responseMock:
+          bodyValue: "{\"status\":\"Healthy\",\"totalDuration\":\"00:00:00.0000606\",\"entries\":{\"self\":{\"status\":\"Healthy\"}}}"
+          contentType: "application/json"
+          statusCode: 200
 
-stagingEnv: {}
+
+stagingEnv:
+- name: "CONFIG_APP_PATH"
+  value: "config/stepladder.config"
+- name: "OTEL_ENABLE_TELEMETRY"
+  value: "true"
+- name: "OTEL_IS_GRPC"
+  value: "false"
+- name: "OTEL_ENDPOINT"
+  value: "http://otel-http.kube.acesso-stg.aws"
+- name: "ENV_FILE"
+  value: ""
+
 testingEnv: {}
 sandboxEnv: {}
 productionEnv: {}
 
 podDisruptionBudget:
   minAvailable: 2
+

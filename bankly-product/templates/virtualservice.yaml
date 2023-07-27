@@ -3,7 +3,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name:  {{ .Values.service.name }}-virtualservice
-  namespace: {{ .Values.istioGateway.namespace }}
+  namespace: {{ .Values.namespace }}
   labels:  
     app: application-bankly
     helm-package: bankly-product
@@ -20,22 +20,12 @@ spec:
   {{- if eq .Values.enviroment "sandbox" }}
   - {{.Values.service.name }}.{{ .Values.namespace }}.bankly-sdb-aws.internal
   {{- end }}
-  {{- if eq .Values.enviroment "production" }}
+  {{- if or (eq .Values.enviroment "production-region-1") (eq .Values.enviroment "production-region-2") }}
   - {{.Values.service.name }}.{{ .Values.namespace }}.bankly-prd-aws.internal
   {{- end }}
   gateways:
   - {{ .Values.istioGateway.name }}
   http:
-  {{- if eq .Values.isCanary true }}
-  - match:
-    - headers:
-        x-bkly-release-version:
-          exact: canary
-    route:
-    - destination:
-        host: {{ .Values.service.name }}-{{ .Values.enviroment }}-service
-        subset: canary
-  {{- end }}
   - route:
     - destination:
         host: {{ .Values.service.name }}-{{ .Values.enviroment }}-service
@@ -46,13 +36,15 @@ spec:
       {{- if eq .Values.isCanary false }}
       weight: 100
       {{- end }}
-    {{- if eq .Values.isCanary true }}
     - destination:
         host: {{ .Values.service.name }}-{{ .Values.enviroment }}-service
         subset: canary
+      {{- if eq .Values.isCanary true }}
       weight: 10
-    {{- end }}
-
+      {{- end }}
+      {{- if eq .Values.isCanary false }}
+      weight: 0
+      {{- end }}
     retries:
       attempts: {{ .Values.istioGateway.retries.attempts }}
       perTryTimeout: {{ .Values.istioGateway.retries.perTryTimeout }}

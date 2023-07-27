@@ -2,8 +2,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-{{ .Values.enviroment  }}-configMap
+  name: {{ .Values.service.name }}-configmap
   namespace: {{ .Values.namespace }}
 data: 
-  {{- .Values.configMapData | toYaml }}
+  {{ toYaml .Values.configMapData | nindent 12 }}  
 {{- end }} 
