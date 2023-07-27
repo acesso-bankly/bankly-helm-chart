@@ -7,9 +7,7 @@ enviroment: staging
 service:
   name: default-service
 
-image:
-  repository: ivanmds2/stepladder
-  tag: 1.0.33
+containerImage: ivanmds2/stepladder:1.0.33
 
 resources:
   limits:
@@ -61,8 +59,12 @@ istioGateway:
     perTryTimeout: 2s
 
 serviceAccount:
-  enabled: false
-  awsRoleArn: ""
+  enabled: true
+  awsRoleArnStaging: "arn:aws:iam::758565826038:role/staging-core-scouter-role"
+  awsRoleArnTesting: ""
+  awsRoleArnSandbox: ""
+  awsRoleArnProductionRegion1: ""
+  awsRoleArnProductionRegion2: ""
 
 configMapData:
   stepladder.config: |

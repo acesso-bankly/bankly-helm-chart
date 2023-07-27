@@ -1,4 +1,4 @@
-{{- if eq .Values.enviroment "production" }}
+{{- if or (eq .Values.enviroment "production-region-1") (eq .Values.enviroment "production-region-2") }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -37,7 +37,7 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Values.service.name }}-pod
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          image: {{ .Values.containerImage }}
           imagePullPolicy: IfNotPresent
 
           ports:
@@ -61,7 +61,7 @@ spec:
           - name: SERVICE_NAME
             value: {{ .Values.service.name }}
           - name: SERVICE_VERSION
-            value: {{ .Values.image.tag }}
+            value: {{ .Values.containerImage | split ":" | last }}
 
           {{- if eq .Values.enviroment "staging" }}
           - name: ASPNETCORE_ENVIRONMENT
@@ -87,7 +87,7 @@ spec:
           {{- toYaml .Values.sandboxEnv | nindent 12 }}
           {{- end }}
           
-          {{- if eq .Values.enviroment "production" }}
+          {{- if or (eq .Values.enviroment "production-region-1") (eq .Values.enviroment "production-region-2") }}
           - name: ASPNETCORE_ENVIRONMENT
             value: "Production"
           - name: NODE_ENV
@@ -138,7 +138,7 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Values.service.name }}-pod
-          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          image: {{ .Values.containerImage }}
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
@@ -156,7 +156,13 @@ spec:
           {{- toYaml .Values.readinessProbe | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+
           env:
+            - name: SERVICE_NAME
+              value: {{ .Values.service.name }}
+            - name: SERVICE_VERSION
+              value: {{ ( splitList ":" .Values.containerImage ) | last }}
+
           {{- if eq .Values.enviroment "staging" }}
           {{- toYaml .Values.stagingEnv | nindent 12 }}
           {{- end }}
@@ -169,7 +175,7 @@ spec:
           {{- toYaml .Values.sandboxEnv | nindent 12 }}
           {{- end }}
           
-          {{- if eq .Values.enviroment "production" }}
+          {{- if or (eq .Values.enviroment "production-region-1") (eq .Values.enviroment "production-region-2") }}
           {{- toYaml .Values.productionEnv | nindent 12 }}
           {{- end }}
 {{- end }}
