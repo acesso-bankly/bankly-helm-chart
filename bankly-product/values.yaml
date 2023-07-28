@@ -1,5 +1,5 @@
 replicaCount: 1
-namespace: bankly-teste
+namespace: default
 
 isCanary: false
 enviroment: staging
@@ -7,12 +7,12 @@ enviroment: staging
 service:
   name: default-service
 
-containerImage: ivanmds2/stepladder:1.0.33
+containerImage: nginx:last
 
 resources:
   limits:
-    cpu: 200m
-    memory: 256Mi
+    cpu: 100m
+    memory: 128Mi
   requests:
     cpu: 100m
     memory: 128Mi
@@ -37,67 +37,34 @@ hpa:
   minReplicas: 2
   maxReplicas: 15
 
-volumes:
-- name: default-service-volume
-  configMap:
-    name: default-service-configmap
-    items:
-    - key: stepladder.config
-      path: stepladder.config
-
-volumeMounts:
-- mountPath: "app/config"
-  name: default-service-volume
-
+volumes: {}
+volumeMounts: {}
 
 istioGateway:
-  enable: false
-  name: "root-platform-istio-gateway"
+  enable: true
+  name: "root-platform-gateway"
   namespace: "root-platform"
+  retriesEnable: false
   retries:
     attempts: 3
     perTryTimeout: 2s
+    retryOn: '500'
+    retryRemoteLocalities: true
 
 serviceAccount:
-  enabled: true
-  awsRoleArnStaging: "arn:aws:iam::758565826038:role/staging-core-scouter-role"
+  enabled: false
+  awsRoleArnStaging: ""
   awsRoleArnTesting: ""
   awsRoleArnSandbox: ""
   awsRoleArnProductionRegion1: ""
   awsRoleArnProductionRegion2: ""
 
-configMapData:
-  stepladder.config: |
-    startup:
-      serviceName: "stepladder-test-curity"
-      serviceVersion: "1.0.0"
-    entrypoints:
-      routes:
-      - route: "hc"
-        method: get
-        enableAnonymous: true
-        responseMock:
-          bodyValue: "{\"status\":\"Healthy\",\"totalDuration\":\"00:00:00.0000606\",\"entries\":{\"self\":{\"status\":\"Healthy\"}}}"
-          contentType: "application/json"
-          statusCode: 200
+configMapData: {}
 
-
-stagingEnv:
-- name: "CONFIG_APP_PATH"
-  value: "config/stepladder.config"
-- name: "OTEL_ENABLE_TELEMETRY"
-  value: "true"
-- name: "OTEL_IS_GRPC"
-  value: "false"
-- name: "OTEL_ENDPOINT"
-  value: "http://otel-http.kube.acesso-stg.aws"
-- name: "ENV_FILE"
-  value: ""
-
+stagingEnv: {}
 testingEnv: {}
 sandboxEnv: {}
 productionEnv: {}
 
 podDisruptionBudget:
   minAvailable: 2
-
