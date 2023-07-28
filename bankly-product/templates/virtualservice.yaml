@@ -2,13 +2,12 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name:  {{ .Values.service.name }}-virtualservice
-  namespace: {{ .Values.namespace }}
+  name:  {{ .Values.service.name }}-{{ .Values.namespace }}-{{ .Values.enviroment  }}-vs
+  namespace: {{ .Values.istioGateway.namespace }}
   labels:  
     app: application-bankly
     helm-package: bankly-product
     release: {{ .Release.Name }}
-    
 spec:
   hosts:
   {{- if eq .Values.enviroment "staging" }}
@@ -26,26 +25,35 @@ spec:
   gateways:
   - {{ .Values.istioGateway.name }}
   http:
+  {{- if eq .Values.isCanary true }}
+  - match:
+    - headers:
+        x-blky-version:
+          exact: canary
+    route:
+      - destination:
+          host: {{ .Values.service.name }}-{{ .Values.enviroment }}-service.{{ .Values.namespace }}.svc.cluster.local
+          subset: canary
+  {{- end }}
   - route:
     - destination:
-        host: {{ .Values.service.name }}-{{ .Values.enviroment }}-service
+        host: {{ .Values.service.name }}-{{ .Values.enviroment }}-service.{{ .Values.namespace }}.svc.cluster.local
         subset: safe
       {{- if eq .Values.isCanary true }}
       weight: 90
-      {{- end }}
-      {{- if eq .Values.isCanary false }}
+      {{- else }}
       weight: 100
       {{- end }}
+    
+    {{- if eq .Values.isCanary true }}
     - destination:
-        host: {{ .Values.service.name }}-{{ .Values.enviroment }}-service
+        host: {{ .Values.service.name }}-{{ .Values.enviroment }}-service.{{ .Values.namespace }}.svc.cluster.local
         subset: canary
-      {{- if eq .Values.isCanary true }}
       weight: 10
-      {{- end }}
-      {{- if eq .Values.isCanary false }}
-      weight: 0
-      {{- end }}
+     {{- end }}
+
+    {{- if eq .Values.istioGateway.retriesEnable true }} 
     retries:
-      attempts: {{ .Values.istioGateway.retries.attempts }}
-      perTryTimeout: {{ .Values.istioGateway.retries.perTryTimeout }}
+    {{- toYaml .Values.istioGateway.retries | nindent 12 }}
+    {{- end }}
 {{- end }}

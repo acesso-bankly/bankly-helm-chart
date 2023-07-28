@@ -57,6 +57,7 @@ spec:
 
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+            
           env:
             - name: SERVICE_NAME
               value: {{ .Values.service.name }}
@@ -68,32 +69,40 @@ spec:
               value: "Staging"
             - name: NODE_ENV
               value: "staging"
+          {{- if .Values.stagingEnv }}
           {{- toYaml .Values.stagingEnv | nindent 12 }}
+          {{- end }}
           {{- end }}
           
           {{- if eq .Values.enviroment "testing" }}
             - name: ASPNETCORE_ENVIRONMENT
-              value: "Test"
+              value: "Testing"
             - name: NODE_ENV
-              value: "test"          
+              value: "testing"
+          {{- if .Values.testingEnv }}
           {{- toYaml .Values.testingEnv | nindent 12 }}
-          {{- end }}  
+          {{- end }}
+          {{- end }}
           
           {{- if eq .Values.enviroment "sandbox" }}
             - name: ASPNETCORE_ENVIRONMENT
               value: "Sandbox"
             - name: NODE_ENV
-              value: "sandbox"          
+              value: "sandbox"
+          {{- if .Values.sandboxEnv }}
           {{- toYaml .Values.sandboxEnv | nindent 12 }}
+          {{- end }}
           {{- end }}
           
           {{- if or (eq .Values.enviroment "production-region-1") (eq .Values.enviroment "production-region-2") }}
             - name: ASPNETCORE_ENVIRONMENT
               value: "Production"
             - name: NODE_ENV
-              value: "production"          
+              value: "production"
+          {{- if .Values.productionEnv }}          
           {{- toYaml .Values.productionEnv | nindent 12 }}
-          {{- end }}        
+          {{- end }}      
+          {{- end }}         
 {{- end }}
 ---
 {{- if eq .Values.isCanary false }}
@@ -164,18 +173,42 @@ spec:
               value: {{ ( splitList ":" .Values.containerImage ) | last }}
 
           {{- if eq .Values.enviroment "staging" }}
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Staging"
+            - name: NODE_ENV
+              value: "staging"
+          {{- if .Values.stagingEnv }}
           {{- toYaml .Values.stagingEnv | nindent 12 }}
+          {{- end }}
           {{- end }}
           
           {{- if eq .Values.enviroment "testing" }}
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Testing"
+            - name: NODE_ENV
+              value: "testing"
+          {{- if .Values.testingEnv }}
           {{- toYaml .Values.testingEnv | nindent 12 }}
-          {{- end }}  
+          {{- end }}
+          {{- end }}
           
           {{- if eq .Values.enviroment "sandbox" }}
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Sandbox"
+            - name: NODE_ENV
+              value: "sandbox"
+          {{- if .Values.sandboxEnv }}
           {{- toYaml .Values.sandboxEnv | nindent 12 }}
+          {{- end }}
           {{- end }}
           
           {{- if or (eq .Values.enviroment "production-region-1") (eq .Values.enviroment "production-region-2") }}
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"
+            - name: NODE_ENV
+              value: "production"
+          {{- if .Values.productionEnv }}          
           {{- toYaml .Values.productionEnv | nindent 12 }}
-          {{- end }}
+          {{- end }}      
+          {{- end }}      
 {{- end }}
