@@ -10,6 +10,7 @@ metadata:
     release: {{ .Release.Name }}
     enviroment: {{ .Values.enviroment  }}
 spec:
+  priorityClassName: {{ .Values.priorityClassName }}
   {{- if eq .Values.isCanary true }}
   replicas: 1
   {{- else }}
@@ -26,7 +27,7 @@ spec:
         version: canary
         enviroment: {{ .Values.enviroment  }}
     spec:
-     
+
       {{- if .Values.volumes }}
       volumes:
       {{- toYaml .Values.volumes | nindent 12 }}
@@ -117,6 +118,7 @@ metadata:
     release: {{ .Release.Name }}
     enviroment: {{ .Values.enviroment  }}
 spec:
+  priorityClassName: {{ .Values.priorityClassName }}
 
   {{- if or (eq .Values.enviroment "staging") (eq .Values.enviroment "testing") }}
   replicas: {{ .Values.replicaCount }}

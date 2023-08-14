@@ -9,6 +9,8 @@ service:
 
 containerImage: nginx:last
 
+priorityClassName: medium-priority
+ 
 resources:
   limits:
     cpu: 100m
