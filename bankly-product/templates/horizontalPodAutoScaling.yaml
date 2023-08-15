@@ -1,14 +1,14 @@
-{{- if or (eq .Values.enviroment "production-region-1") (eq .Values.enviroment "production-region-2") (eq .Values.enviroment "sandbox") }}
+{{- if or (eq .Values.environment "production-region-1") (eq .Values.environment "production-region-2") (eq .Values.environment "sandbox") }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ .Release.Name }}-{{ .Values.enviroment }}-hpa
+  name: {{ .Release.Name }}-{{ .Values.environment }}-hpa
   namespace: {{ .Values.namespace }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ .Release.Name }}-{{ .Values.enviroment  }}-deployment
+    name: {{ .Release.Name }}-{{ .Values.environment  }}-deployment
   minReplicas: {{ .Values.hpa.minReplicas }}
   maxReplicas: {{ .Values.hpa.maxReplicas }}
   metrics:

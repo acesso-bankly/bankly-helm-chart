@@ -26,7 +26,7 @@ helm install deploy-bankly-product ./bankly-product --dry-run --debug
 
 ```sh
 
-helm upgrade -f .\stepllader-values.yaml --set isCanary=false,enviroment="production" -i "namespace.service-name" bankly-helm/bankly-product --dry-run --debug
+helm upgrade -f .\stepllader-values.yaml --set isCanary=false,environment="production" -i "namespace.service-name" bankly-helm/bankly-product --dry-run --debug
 
 ```
 
