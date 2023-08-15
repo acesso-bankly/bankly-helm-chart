@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.service.name }}-{{ .Values.enviroment  }}-service
+  name: {{ .Values.service.name }}-{{ .Values.environment  }}-service
   namespace: {{ .Values.namespace }}
   labels:
     app: application-bankly
     helm-package: bankly-product
     release: {{ .Release.Name }}
-    enviroment: {{ .Values.enviroment  }}
+    environment: {{ .Values.environment  }}
 spec:
   type: ClusterIP
   ports:
@@ -17,5 +17,5 @@ spec:
       protocol: TCP
   selector:
     app: {{ .Values.service.name }}
-    enviroment: {{ .Values.enviroment  }}
+    environment: {{ .Values.environment  }}
     

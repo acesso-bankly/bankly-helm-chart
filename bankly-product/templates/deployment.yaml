@@ -1,14 +1,14 @@
-{{- if or (eq .Values.enviroment "production-region-1") (eq .Values.enviroment "production-region-2") }}
+{{- if or (eq .Values.environment "production-region-1") (eq .Values.environment "production-region-2") }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-{{ .Values.enviroment  }}-deployment-canary
+  name: {{ .Release.Name }}-{{ .Values.environment  }}-deployment-canary
   namespace: {{ .Values.namespace }}
   labels:
     app: application-bankly
     helm-package: bankly-product
     release: {{ .Release.Name }}
-    enviroment: {{ .Values.enviroment  }}
+    environment: {{ .Values.environment  }}
 spec:
   priorityClassName: {{ .Values.priorityClassName }}
   {{- if eq .Values.isCanary true }}
@@ -19,13 +19,13 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.service.name }}
-      enviroment: {{ .Values.enviroment  }}
+      environment: {{ .Values.environment  }}
   template:
     metadata:
       labels:
         app: {{ .Values.service.name }}
         version: canary
-        enviroment: {{ .Values.enviroment  }}
+        environment: {{ .Values.environment  }}
     spec:
 
       {{- if .Values.volumes }}
@@ -34,7 +34,7 @@ spec:
       {{- end }}
 
       {{- if eq .Values.serviceAccount.enabled true }}      
-      serviceAccountName: {{ .Values.service.name }}-{{ .Values.enviroment  }}-serviceaccount
+      serviceAccountName: {{ .Values.service.name }}-{{ .Values.environment  }}-serviceaccount
       {{- end }}
       containers:
         - name: {{ .Values.service.name }}-pod
@@ -65,7 +65,7 @@ spec:
             - name: SERVICE_VERSION
               value: {{ ( splitList ":" .Values.containerImage ) | last }}
 
-          {{- if eq .Values.enviroment "staging" }}
+          {{- if eq .Values.environment "staging" }}
             - name: ASPNETCORE_ENVIRONMENT
               value: "Staging"
             - name: NODE_ENV
@@ -75,7 +75,7 @@ spec:
           {{- end }}
           {{- end }}
           
-          {{- if eq .Values.enviroment "testing" }}
+          {{- if eq .Values.environment "testing" }}
             - name: ASPNETCORE_ENVIRONMENT
               value: "Testing"
             - name: NODE_ENV
@@ -85,7 +85,7 @@ spec:
           {{- end }}
           {{- end }}
           
-          {{- if eq .Values.enviroment "sandbox" }}
+          {{- if eq .Values.environment "sandbox" }}
             - name: ASPNETCORE_ENVIRONMENT
               value: "Sandbox"
             - name: NODE_ENV
@@ -95,7 +95,7 @@ spec:
           {{- end }}
           {{- end }}
           
-          {{- if or (eq .Values.enviroment "production-region-1") (eq .Values.enviroment "production-region-2") }}
+          {{- if or (eq .Values.environment "production-region-1") (eq .Values.environment "production-region-2") }}
             - name: ASPNETCORE_ENVIRONMENT
               value: "Production"
             - name: NODE_ENV
@@ -110,17 +110,17 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-{{ .Values.enviroment  }}-deployment
+  name: {{ .Release.Name }}-{{ .Values.environment  }}-deployment
   namespace: {{ .Values.namespace }}
   labels:
     app: application-bankly
     helm-package: bankly-product
     release: {{ .Release.Name }}
-    enviroment: {{ .Values.enviroment  }}
+    environment: {{ .Values.environment  }}
 spec:
   priorityClassName: {{ .Values.priorityClassName }}
 
-  {{- if or (eq .Values.enviroment "staging") (eq .Values.enviroment "testing") }}
+  {{- if or (eq .Values.environment "staging") (eq .Values.environment "testing") }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   strategy:
@@ -131,13 +131,13 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.service.name }}
-      enviroment: {{ .Values.enviroment  }}
+      environment: {{ .Values.environment  }}
   template:
     metadata:
       labels:
         app: {{ .Values.service.name }}
         version: safe
-        enviroment: {{ .Values.enviroment }}
+        environment: {{ .Values.environment }}
     spec:
       {{- if .Values.volumes }}
       volumes:
@@ -145,7 +145,7 @@ spec:
       {{- end }}
 
       {{- if eq .Values.serviceAccount.enabled true }}      
-      serviceAccountName: {{ .Values.service.name }}-{{ .Values.enviroment  }}-serviceaccount
+      serviceAccountName: {{ .Values.service.name }}-{{ .Values.environment  }}-serviceaccount
       {{- end }}
       containers:
         - name: {{ .Values.service.name }}-pod
@@ -174,7 +174,7 @@ spec:
             - name: SERVICE_VERSION
               value: {{ ( splitList ":" .Values.containerImage ) | last }}
 
-          {{- if eq .Values.enviroment "staging" }}
+          {{- if eq .Values.environment "staging" }}
             - name: ASPNETCORE_ENVIRONMENT
               value: "Staging"
             - name: NODE_ENV
@@ -184,7 +184,7 @@ spec:
           {{- end }}
           {{- end }}
           
-          {{- if eq .Values.enviroment "testing" }}
+          {{- if eq .Values.environment "testing" }}
             - name: ASPNETCORE_ENVIRONMENT
               value: "Testing"
             - name: NODE_ENV
@@ -194,7 +194,7 @@ spec:
           {{- end }}
           {{- end }}
           
-          {{- if eq .Values.enviroment "sandbox" }}
+          {{- if eq .Values.environment "sandbox" }}
             - name: ASPNETCORE_ENVIRONMENT
               value: "Sandbox"
             - name: NODE_ENV
@@ -204,7 +204,7 @@ spec:
           {{- end }}
           {{- end }}
           
-          {{- if or (eq .Values.enviroment "production-region-1") (eq .Values.enviroment "production-region-2") }}
+          {{- if or (eq .Values.environment "production-region-1") (eq .Values.environment "production-region-2") }}
             - name: ASPNETCORE_ENVIRONMENT
               value: "Production"
             - name: NODE_ENV

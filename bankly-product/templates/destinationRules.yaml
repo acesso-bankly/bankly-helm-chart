@@ -1,10 +1,10 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
-  name: {{ .Values.service.name }}-{{ .Values.namespace }}-{{ .Values.enviroment  }}-dr
+  name: {{ .Values.service.name }}-{{ .Values.namespace }}-{{ .Values.environment  }}-dr
   namespace: {{ .Values.istioGateway.namespace }}
 spec:
-  host: {{ .Values.service.name }}-{{ .Values.enviroment  }}-service.{{ .Values.namespace }}.svc.cluster.local
+  host: {{ .Values.service.name }}-{{ .Values.environment  }}-service.{{ .Values.namespace }}.svc.cluster.local
   subsets:
   - name: safe
     labels:

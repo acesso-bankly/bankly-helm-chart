@@ -2,7 +2,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name:  {{ .Values.service.name }}-{{ .Values.namespace }}-{{ .Values.enviroment  }}-vs
+  name:  {{ .Values.service.name }}-{{ .Values.namespace }}-{{ .Values.environment  }}-vs
   namespace: {{ .Values.istioGateway.namespace }}
   labels:  
     app: application-bankly
@@ -10,16 +10,16 @@ metadata:
     release: {{ .Release.Name }}
 spec:
   hosts:
-  {{- if eq .Values.enviroment "staging" }}
+  {{- if eq .Values.environment "staging" }}
   - {{.Values.service.name }}.{{ .Values.namespace }}.bankly-stg-aws.internal
   {{- end }}
-  {{- if eq .Values.enviroment "testing" }}
+  {{- if eq .Values.environment "testing" }}
   - {{.Values.service.name }}.{{ .Values.namespace }}.bankly-tsg-aws.internal
   {{- end }}  
-  {{- if eq .Values.enviroment "sandbox" }}
+  {{- if eq .Values.environment "sandbox" }}
   - {{.Values.service.name }}.{{ .Values.namespace }}.bankly-sdb-aws.internal
   {{- end }}
-  {{- if or (eq .Values.enviroment "production-region-1") (eq .Values.enviroment "production-region-2") }}
+  {{- if or (eq .Values.environment "production-region-1") (eq .Values.environment "production-region-2") }}
   - {{.Values.service.name }}.{{ .Values.namespace }}.bankly-prd-aws.internal
   {{- end }}
   gateways:
@@ -32,12 +32,12 @@ spec:
           exact: canary
     route:
       - destination:
-          host: {{ .Values.service.name }}-{{ .Values.enviroment }}-service.{{ .Values.namespace }}.svc.cluster.local
+          host: {{ .Values.service.name }}-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
           subset: canary
   {{- end }}
   - route:
     - destination:
-        host: {{ .Values.service.name }}-{{ .Values.enviroment }}-service.{{ .Values.namespace }}.svc.cluster.local
+        host: {{ .Values.service.name }}-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
         subset: safe
       {{- if eq .Values.isCanary true }}
       weight: 90
@@ -47,7 +47,7 @@ spec:
     
     {{- if eq .Values.isCanary true }}
     - destination:
-        host: {{ .Values.service.name }}-{{ .Values.enviroment }}-service.{{ .Values.namespace }}.svc.cluster.local
+        host: {{ .Values.service.name }}-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
         subset: canary
       weight: 10
      {{- end }}
