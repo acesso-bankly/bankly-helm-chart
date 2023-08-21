@@ -23,14 +23,14 @@ livenessProbe:
   httpGet:
     path: /hc
     port: 80
-  initialDelaySeconds: 10
+  initialDelaySeconds: 30
   periodSeconds: 5
 
 readinessProbe:
   httpGet:
     path: /hc
     port: 80
-  initialDelaySeconds: 15
+  initialDelaySeconds: 45
   periodSeconds: 5
 
 hpa:
