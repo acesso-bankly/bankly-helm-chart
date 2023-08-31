@@ -3,6 +3,7 @@ namespace: default
 
 isCanary: false
 environment: staging
+region: us-east-1
 
 service:
   name: default-service
@@ -58,8 +59,15 @@ serviceAccount:
   awsRoleArnStaging: ""
   awsRoleArnTesting: ""
   awsRoleArnSandbox: ""
-  awsRoleArnProductionRegion1: ""
-  awsRoleArnProductionRegion2: ""
+  awsRoleArnProduction: ""
+
+tagResources:
+  context: ""
+  type: ""
+  cc: ""
+  product: ""
+  serviceId: ""
+  repository: ""
 
 configMapData: {}
 

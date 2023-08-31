@@ -10,18 +10,8 @@ metadata:
     release: {{ .Release.Name }}
 spec:
   hosts:
-  {{- if eq .Values.environment "staging" }}
-  - {{.Values.service.name }}.{{ .Values.namespace }}.bankly-stg-aws.internal
-  {{- end }}
-  {{- if eq .Values.environment "testing" }}
-  - {{.Values.service.name }}.{{ .Values.namespace }}.bankly-tsg-aws.internal
-  {{- end }}  
-  {{- if eq .Values.environment "sandbox" }}
-  - {{.Values.service.name }}.{{ .Values.namespace }}.bankly-sdb-aws.internal
-  {{- end }}
-  {{- if or (eq .Values.environment "production-region-1") (eq .Values.environment "production-region-2") }}
-  - {{.Values.service.name }}.{{ .Values.namespace }}.bankly-prd-aws.internal
-  {{- end }}
+  - {{.Values.service.name }}.{{ .Values.namespace }}.bankly-{{ .Values.environment }}-{{ .Values.region }}-aws.internal
+  - {{ .Values.service.name }}-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
   gateways:
   - {{ .Values.istioGateway.name }}
   http:
