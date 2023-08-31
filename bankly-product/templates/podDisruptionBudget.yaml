@@ -1,4 +1,4 @@
-{{- if or (eq .Values.enviroment "production-region-1") (eq .Values.enviroment "production-region-2") (eq .Values.enviroment "sandbox") }}
+{{- if or (eq .Values.enviroment "production") (eq .Values.enviroment "sandbox") }}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:

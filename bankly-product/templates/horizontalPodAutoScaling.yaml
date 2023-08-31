@@ -1,4 +1,4 @@
-{{- if or (eq .Values.environment "production-region-1") (eq .Values.environment "production-region-2") (eq .Values.environment "sandbox") }}
+{{- if or (eq .Values.environment "production") (eq .Values.environment "sandbox") }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:

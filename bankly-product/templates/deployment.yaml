@@ -1,4 +1,4 @@
-{{- if or (eq .Values.environment "production-region-1") (eq .Values.environment "production-region-2") }}
+{{- if eq .Values.environment "production" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -9,6 +9,11 @@ metadata:
     helm-package: bankly-product
     release: {{ .Release.Name }}
     environment: {{ .Values.environment  }}
+   
+    context: {{ .Values.tagsResources.context }}
+    type: {{ .Values.tagsResources.type }}
+    cc: {{ .Values.tagsResources.cc }}
+    product: {{ .Values.tagsResources.product }}
 spec:
   priorityClassName: {{ .Values.priorityClassName }}
   {{- if eq .Values.isCanary true }}
@@ -95,7 +100,7 @@ spec:
           {{- end }}
           {{- end }}
           
-          {{- if or (eq .Values.environment "production-region-1") (eq .Values.environment "production-region-2") }}
+          {{- if eq .Values.environment "production" }}
             - name: ASPNETCORE_ENVIRONMENT
               value: "Production"
             - name: NODE_ENV
@@ -204,7 +209,7 @@ spec:
           {{- end }}
           {{- end }}
           
-          {{- if or (eq .Values.environment "production-region-1") (eq .Values.environment "production-region-2") }}
+          {{- if (eq .Values.environment "production") }}
             - name: ASPNETCORE_ENVIRONMENT
               value: "Production"
             - name: NODE_ENV
