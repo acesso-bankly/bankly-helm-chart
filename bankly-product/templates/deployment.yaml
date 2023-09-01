@@ -75,8 +75,8 @@ spec:
               value: "Staging"
             - name: NODE_ENV
               value: "staging"
-          {{- if .Values.stagingEnv }}
-          {{- toYaml .Values.stagingEnv | nindent 12 }}
+          {{- if .Values.stagingEnvironment }}
+          {{- toYaml .Values.stagingEnvironment | nindent 12 }}
           {{- end }}
           {{- end }}
           
@@ -85,8 +85,8 @@ spec:
               value: "Testing"
             - name: NODE_ENV
               value: "testing"
-          {{- if .Values.testingEnv }}
-          {{- toYaml .Values.testingEnv | nindent 12 }}
+          {{- if .Values.testingEnvironment }}
+          {{- toYaml .Values.testingEnvironment | nindent 12 }}
           {{- end }}
           {{- end }}
           
@@ -95,8 +95,8 @@ spec:
               value: "Sandbox"
             - name: NODE_ENV
               value: "sandbox"
-          {{- if .Values.sandboxEnv }}
-          {{- toYaml .Values.sandboxEnv | nindent 12 }}
+          {{- if .Values.sandboxEnvironment }}
+          {{- toYaml .Values.sandboxEnvironment | nindent 12 }}
           {{- end }}
           {{- end }}
           
@@ -105,8 +105,8 @@ spec:
               value: "Production"
             - name: NODE_ENV
               value: "production"
-          {{- if .Values.productionEnv }}          
-          {{- toYaml .Values.productionEnv | nindent 12 }}
+          {{- if .Values.productionEnvironment }}          
+          {{- toYaml .Values.productionEnvironment | nindent 12 }}
           {{- end }}      
           {{- end }}         
 {{- end }}
@@ -184,8 +184,8 @@ spec:
               value: "Staging"
             - name: NODE_ENV
               value: "staging"
-          {{- if .Values.stagingEnv }}
-          {{- toYaml .Values.stagingEnv | nindent 12 }}
+          {{- if .Values.stagingEnvironment }}
+          {{- toYaml .Values.stagingEnvironment | nindent 12 }}
           {{- end }}
           {{- end }}
           
@@ -194,8 +194,8 @@ spec:
               value: "Testing"
             - name: NODE_ENV
               value: "testing"
-          {{- if .Values.testingEnv }}
-          {{- toYaml .Values.testingEnv | nindent 12 }}
+          {{- if .Values.testingEnvironment }}
+          {{- toYaml .Values.testingEnvironment | nindent 12 }}
           {{- end }}
           {{- end }}
           
@@ -204,8 +204,8 @@ spec:
               value: "Sandbox"
             - name: NODE_ENV
               value: "sandbox"
-          {{- if .Values.sandboxEnv }}
-          {{- toYaml .Values.sandboxEnv | nindent 12 }}
+          {{- if .Values.sandboxEnvironment }}
+          {{- toYaml .Values.sandboxEnvironment | nindent 12 }}
           {{- end }}
           {{- end }}
           
@@ -214,8 +214,8 @@ spec:
               value: "Production"
             - name: NODE_ENV
               value: "production"
-          {{- if .Values.productionEnv }}          
-          {{- toYaml .Values.productionEnv | nindent 12 }}
+          {{- if .Values.productionEnvironment }}          
+          {{- toYaml .Values.productionEnvironment | nindent 12 }}
           {{- end }}      
           {{- end }}      
 {{- end }}
