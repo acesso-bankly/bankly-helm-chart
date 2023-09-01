@@ -71,10 +71,10 @@ tagResources:
 
 configMapData: {}
 
-stagingEnv: {}
-testingEnv: {}
-sandboxEnv: {}
-productionEnv: {}
+stagingEnvironment: {}
+testingEnvironment: {}
+sandboxEnvironment: {}
+productionEnvironment: {}
 
 podDisruptionBudget:
   minAvailable: 2
