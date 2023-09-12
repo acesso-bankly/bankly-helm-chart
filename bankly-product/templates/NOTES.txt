@@ -1,0 +1,1 @@
+Url application: {{ .Values.service.name }}.{{ .Values.namespace }}.bankly-{{ .Values.environment }}-{{ .Values.region }}-aws.internal
