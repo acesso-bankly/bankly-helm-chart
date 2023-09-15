@@ -1,4 +1,6 @@
-Application Name: {{ .Values.service.name }}
-Container Image: {{ .Values.containerImage }}
-Application external url: {{ .Values.service.name }}.{{ .Values.namespace }}.bankly-{{ .Values.environment }}-{{ .Values.region }}-aws.internal
-Application internal url: {{ .Values.service.name }}-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
+{
+"applicationName": "{{ .Values.service.name }}",
+"containerImage": "{{ .Values.containerImage }}",
+"externalUrl": "{{ .Values.service.name }}.{{ .Values.namespace }}.bankly-{{ .Values.environment }}-{{ .Values.region }}-aws.internal",
+"internalUrl": "{{ .Values.service.name }}-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local"
+}
