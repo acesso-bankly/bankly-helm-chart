@@ -56,10 +56,13 @@ istioGateway:
 
 serviceAccount:
   enabled: false
-  awsRoleArnStaging: ""
-  awsRoleArnTesting: ""
+  awsRoleArnStagingUsEast1: ""
+  awsRoleArnStagingUsWest2: ""
+  awsRoleArnTestingUsEast1: ""
+  awsRoleArnTestingUsWest2: ""
   awsRoleArnSandbox: ""
-  awsRoleArnProduction: ""
+  awsRoleArnProductionUsEast1: ""
+  awsRoleArnProductionUsWest2: ""
 
 tagResources:
   context: ""
