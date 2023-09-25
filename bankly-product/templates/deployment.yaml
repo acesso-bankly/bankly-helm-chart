@@ -123,10 +123,6 @@ metadata:
     release: {{ .Release.Name }}
     environment: {{ .Values.environment  }}
 spec:
-
-  {{- if or (eq .Values.environment "staging") (eq .Values.environment "testing") }}
-  replicas: {{ .Values.replicaCount }}
-  {{- end }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
