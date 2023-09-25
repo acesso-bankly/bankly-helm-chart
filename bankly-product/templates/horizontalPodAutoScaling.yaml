@@ -1,4 +1,3 @@
-{{- if or (eq .Values.environment "production") (eq .Values.environment "sandbox") }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -9,8 +8,13 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ .Release.Name }}-{{ .Values.environment  }}-deployment
+  {{- if or (eq .Values.environment "production") (eq .Values.environment "sandbox") }}
   minReplicas: {{ .Values.hpa.minReplicas }}
   maxReplicas: {{ .Values.hpa.maxReplicas }}
+  {{- else }}
+  minReplicas: 1
+  maxReplicas: 4
+  {{- end }}
   metrics:
   - type: Resource
     resource:
@@ -24,4 +28,3 @@ spec:
       target:
         type: Utilization
         averageUtilization: {{ .Values.hpa.memoryAverageUtilization }}
-{{- end }}
