@@ -10,7 +10,7 @@ metadata:
     release: {{ .Release.Name }}
 spec:
   hosts:
-  - {{.Values.service.name }}.{{ .Values.namespace }}.bankly-{{ .Values.environment }}-{{ .Values.region }}-aws.internal
+  - {{ .Values.service.name }}.{{ .Values.namespace }}.bankly-{{ .Values.environment }}-{{ .Values.region }}-aws.internal
   - {{ .Values.service.name }}-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
   gateways:
   - {{ .Values.istioGateway.name }}

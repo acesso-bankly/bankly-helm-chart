@@ -72,9 +72,11 @@ spec:
 
           {{- if eq .Values.environment "staging" }}
             - name: ASPNETCORE_ENVIRONMENT
-              value: "Staging"
+              value: "Staging-{{ .Values.region }}"
+            - name: DOTNETCORE_ENVIRONMENT
+              value: "Staging-{{ .Values.region }}"
             - name: NODE_ENV
-              value: "staging"
+              value: "staging-{{ .Values.region }}"
           {{- if .Values.stagingEnvironment }}
           {{- toYaml .Values.stagingEnvironment | nindent 12 }}
           {{- end }}
@@ -82,9 +84,11 @@ spec:
           
           {{- if eq .Values.environment "testing" }}
             - name: ASPNETCORE_ENVIRONMENT
-              value: "Testing"
+              value: "Testing-{{ .Values.region }}"
+            - name: DOTNETCORE_ENVIRONMENT
+              value: "Testing-{{ .Values.region }}"
             - name: NODE_ENV
-              value: "testing"
+              value: "testing-{{ .Values.region }}"
           {{- if .Values.testingEnvironment }}
           {{- toYaml .Values.testingEnvironment | nindent 12 }}
           {{- end }}
@@ -92,9 +96,11 @@ spec:
           
           {{- if eq .Values.environment "sandbox" }}
             - name: ASPNETCORE_ENVIRONMENT
-              value: "Sandbox"
+              value: "Sandbox-{{ .Values.region }}"
+            - name: DOTNETCORE_ENVIRONMENT
+              value: "Sandbox-{{ .Values.region }}"
             - name: NODE_ENV
-              value: "sandbox"
+              value: "sandbox-{{ .Values.region }}"
           {{- if .Values.sandboxEnvironment }}
           {{- toYaml .Values.sandboxEnvironment | nindent 12 }}
           {{- end }}
@@ -102,9 +108,11 @@ spec:
           
           {{- if eq .Values.environment "production" }}
             - name: ASPNETCORE_ENVIRONMENT
-              value: "Production"
+              value: "Production-{{ .Values.region }}"
+            - name: DOTNETCORE_ENVIRONMENT
+              value: "Production-{{ .Values.region }}"
             - name: NODE_ENV
-              value: "production"
+              value: "production-{{ .Values.region }}"
           {{- if .Values.productionEnvironment }}          
           {{- toYaml .Values.productionEnvironment | nindent 12 }}
           {{- end }}      
@@ -177,9 +185,11 @@ spec:
 
           {{- if eq .Values.environment "staging" }}
             - name: ASPNETCORE_ENVIRONMENT
-              value: "Staging"
+              value: "Staging-{{ .Values.region }}"
+            - name: DOTNETCORE_ENVIRONMENT
+              value: "Staging-{{ .Values.region }}"
             - name: NODE_ENV
-              value: "staging"
+              value: "staging-{{ .Values.region }}"
           {{- if .Values.stagingEnvironment }}
           {{- toYaml .Values.stagingEnvironment | nindent 12 }}
           {{- end }}
@@ -187,9 +197,11 @@ spec:
           
           {{- if eq .Values.environment "testing" }}
             - name: ASPNETCORE_ENVIRONMENT
-              value: "Testing"
+              value: "Testing-{{ .Values.region }}"
+            - name: DOTNETCORE_ENVIRONMENT
+              value: "Testing-{{ .Values.region }}"
             - name: NODE_ENV
-              value: "testing"
+              value: "testing-{{ .Values.region }}"
           {{- if .Values.testingEnvironment }}
           {{- toYaml .Values.testingEnvironment | nindent 12 }}
           {{- end }}
@@ -197,9 +209,11 @@ spec:
           
           {{- if eq .Values.environment "sandbox" }}
             - name: ASPNETCORE_ENVIRONMENT
-              value: "Sandbox"
+              value: "Sandbox-{{ .Values.region }}"
+            - name: DOTNETCORE_ENVIRONMENT
+              value: "Sandbox-{{ .Values.region }}"
             - name: NODE_ENV
-              value: "sandbox"
+              value: "sandbox-{{ .Values.region }}"
           {{- if .Values.sandboxEnvironment }}
           {{- toYaml .Values.sandboxEnvironment | nindent 12 }}
           {{- end }}
@@ -207,9 +221,11 @@ spec:
           
           {{- if (eq .Values.environment "production") }}
             - name: ASPNETCORE_ENVIRONMENT
-              value: "Production"
+              value: "Production-{{ .Values.region }}"
+            - name: DOTNETCORE_ENVIRONMENT
+              value: "Production-{{ .Values.region }}"
             - name: NODE_ENV
-              value: "production"
+              value: "production-{{ .Values.region }}"
           {{- if .Values.productionEnvironment }}          
           {{- toYaml .Values.productionEnvironment | nindent 12 }}
           {{- end }}      
