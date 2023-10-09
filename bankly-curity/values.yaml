@@ -4,6 +4,7 @@
 
 replicaCount: 1
 revisionHistoryLimit: 10
+role-service: "change-me"
 
 image:
   repository: curity.azurecr.io/curity/idsvr
