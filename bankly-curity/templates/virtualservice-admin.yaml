@@ -1,0 +1,48 @@
+{{- if eq .Values.istioGateway.enable true }} 
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name:  {{ include "curity.fullname" . }}-admin-vs
+  labels:
+    {{- include "curity.labels" . | nindent 4 }}
+    role: {{ include "curity.fullname" . }}-admin
+  {{- with .Values.curity.admin.annotations }}
+spec:
+  hosts:
+  - {{ include "curity.fullname" . }}-admin-vs.{{ .Values.namespace }}.bankly-{{ .Values.environment }}-{{ .Values.region }}-aws.internal
+  - {{ include "curity.fullname" . }}-admin-vs-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
+  gateways:
+  - {{ .Values.istioGateway.name }}
+  http:
+  {{- if eq .Values.isCanary true }}
+  - match:
+    - headers:
+        x-blky-version:
+          exact: canary
+    route:
+      - destination:
+          host: {{ include "curity.fullname" . }}-admin-vs-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
+          subset: canary
+  {{- end }}
+  - route:
+    - destination:
+        host: {{ include "curity.fullname" . }}-admin-vs-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
+        subset: safe
+      {{- if eq .Values.isCanary true }}
+      weight: 90
+      {{- else }}
+      weight: 100
+      {{- end }}
+    
+    {{- if eq .Values.isCanary true }}
+    - destination:
+        host: {{ include "curity.fullname" . }}-admin-vs-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
+        subset: canary
+      weight: 10
+     {{- end }}
+
+    {{- if eq .Values.istioGateway.retriesEnable true }} 
+    retries:
+    {{- toYaml .Values.istioGateway.retries | nindent 12 }}
+    {{- end }}
+{{- end }}

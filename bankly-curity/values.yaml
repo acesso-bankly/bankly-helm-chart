@@ -5,6 +5,8 @@
 replicaCount: 1
 revisionHistoryLimit: 10
 awsRoleArn: "change-me"
+environment: staging
+region: us-east-1
 
 image:
   repository: curity.azurecr.io/curity/idsvr
@@ -184,6 +186,18 @@ resources: {}
 #   requests:
 #     cpu: 100m
 #     memory: 128Mi
+
+istioGateway:
+  enable: true
+  name: "root-platform-gateway"
+  namespace: "root-platform"
+  retriesEnable: false
+  retries:
+    attempts: 3
+    perTryTimeout: 2s
+    retryOn: '500'
+    retryRemoteLocalities: true
+
 
 autoscaling:
   enabled: false
