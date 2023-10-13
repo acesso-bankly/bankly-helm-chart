@@ -191,7 +191,6 @@ istioGateway:
   enable: true
   name: "root-platform-gateway"
   namespace: "root-platform"
-  retriesEnable: false
 
 autoscaling:
   enabled: false
