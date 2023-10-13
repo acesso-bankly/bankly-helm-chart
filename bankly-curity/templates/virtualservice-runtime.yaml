@@ -3,6 +3,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name:  {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime-svc-vs
+  namespace: {{ .Values.istioGateway.namespace }}
   labels:
     {{- include "curity.labels" $root | nindent 4 }}
     role: {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime
@@ -12,38 +13,14 @@ metadata:
   {{- end }}
 spec:
   hosts:
-  - {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime-svc.{{ .Values.namespace }}.bankly-{{ .Values.environment }}-{{ .Values.region }}-aws.internal
-  - {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime-svc-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
+  - {{ include "curity.fullname" . }}-runtime-svc.{{ .Values.namespace }}.bankly-{{ .Values.environment }}-{{ .Values.region }}-aws.internal
+  - {{ include "curity.fullname" . }}-runtime-svc-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
   gateways:
   - {{ .Values.istioGateway.name }}
   http:
-  {{- if eq .Values.isCanary true }}
-  - match:
-    - headers:
-        x-blky-version:
-          exact: canary
     route:
       - destination:
-          host: {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime-svc-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
-          subset: canary
-  {{- end }}
-  - route:
-    - destination:
-        host: {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime-svc-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
-        subset: safe
-      {{- if eq .Values.isCanary true }}
-      weight: 90
-      {{- else }}
-      weight: 100
-      {{- end }}
-    
-    {{- if eq .Values.isCanary true }}
-    - destination:
-        host: {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime-svc-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
-        subset: canary
-      weight: 10
-     {{- end }}
-
+          host: {{ include "curity.fullname" . }}-runtime-svc-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
     {{- if eq .Values.istioGateway.retriesEnable true }} 
     retries:
     {{- toYaml .Values.istioGateway.retries | nindent 12 }}
