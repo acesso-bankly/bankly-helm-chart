@@ -22,7 +22,4 @@ spec:
       - destination:
           host: {{ include "curity.fullname" . }}-runtime-svc-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
     {{- if eq .Values.istioGateway.retriesEnable true }} 
-    retries:
-    {{- toYaml .Values.istioGateway.retries | nindent 12 }}
-    {{- end }}
 {{- end }}

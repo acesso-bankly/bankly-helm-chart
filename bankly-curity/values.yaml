@@ -192,12 +192,6 @@ istioGateway:
   name: "root-platform-gateway"
   namespace: "root-platform"
   retriesEnable: false
-  retries:
-    attempts: 3
-    perTryTimeout: 2s
-    retryOn: '500'
-    retryRemoteLocalities: true
-
 
 autoscaling:
   enabled: false
