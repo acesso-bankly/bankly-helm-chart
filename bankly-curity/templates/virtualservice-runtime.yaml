@@ -1,0 +1,26 @@
+{{- if eq .Values.istioGateway.enable true }}
+{{- range $key, $arrayValue := .Values.curity.runtimes }} 
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:  
+  name:  {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime-svc-vs
+  namespace: {{ .Values.istioGateway.namespace }}
+  labels:
+    {{- include "curity.labels" $root | nindent 4 }}
+    role: {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime
+  {{- with $arrayValue.service.annotations }}
+  annotations:
+  {{- toYaml $root | nindent 4 }}
+  {{- end }}
+spec:
+  hosts:
+  - {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime-svc-vs.{{ .Values.namespace }}.bankly-{{ .Values.environment }}-{{ .Values.region }}-aws.internal
+  - {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime-svc-vs-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
+  gateways:
+  - {{ .Values.istioGateway.name }}
+  http:
+    route:
+      - destination:
+          host: {{ include "curity.fullname" . }}-{{ $arrayValue.role }}-runtime-svc-vs-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
+    {{- if eq .Values.istioGateway.retriesEnable true }} 
+{{- end }}
