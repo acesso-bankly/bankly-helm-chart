@@ -64,12 +64,10 @@ serviceAccount:
   awsRoleArnProductionUsWest2: ""
 
 tagResources:
-  context: ""
-  type: ""
-  cc: ""
-  product: ""
-  serviceId: ""
-  repository: ""
+  context: "Platform"
+  type: "shared"
+  cc: 999
+  product: "Gringotts"
 
 configMapData: {}
 
