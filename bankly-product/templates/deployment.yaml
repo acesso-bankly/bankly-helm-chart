@@ -10,10 +10,10 @@ metadata:
     release: {{ .Release.Name }}
     environment: {{ .Values.environment  }}
    
-    context: {{ .Values.tagsResources.context }}
-    type: {{ .Values.tagsResources.type }}
-    cc: {{ .Values.tagsResources.cc }}
-    product: {{ .Values.tagsResources.product }}
+    context: {{ .Values.tagResources.context }}
+    type: {{ .Values.tagResources.type }}
+    cc: {{ .Values.tagResources.cc }}
+    product: {{ .Values.tagResources.product }}
 spec:
   {{- if eq .Values.isCanary true }}
   replicas: 1
@@ -130,6 +130,11 @@ metadata:
     helm-package: bankly-product
     release: {{ .Release.Name }}
     environment: {{ .Values.environment  }}
+    
+    context: {{ .Values.tagResources.context }}
+    type: {{ .Values.tagResources.type }}
+    cc: {{ .Values.tagResources.cc }}
+    product: {{ .Values.tagResources.product }}
 spec:
   strategy:
     type: RollingUpdate
