@@ -1,3 +1,4 @@
+{{- $root := . -}}
 {{- if eq .Values.istioGateway.enable true }}
 {{- range $key, $arrayValue := .Values.curity.runtimes }} 
 apiVersion: networking.istio.io/v1alpha3
