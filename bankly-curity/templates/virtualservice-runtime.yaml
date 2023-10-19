@@ -1,26 +1,22 @@
-{{- if eq .Values.istioGateway.enable true }} 
 {{- $root := . -}}
-
 {{- range $key, $arrayValue := .Values.curity.runtimes }}
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
-metadata:  
-  name:  {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime-vs
-  namespace: {{ .Values.istioGateway.namespace }}
+metadata:
+  name: {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime
+  namespace: {{ $root.Values.istioGateway.namespace }}
   labels:
-    {{- include "curity.labels" . | nindent 4 }}
+    {{- include "curity.labels" $root | nindent 4 }}
     role: {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime
-  {{- with $arrayValue.service.annotations }}
 spec:
   hosts:
-  - {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime-vs.{{ .Values.namespace }}.bankly-{{ .Values.environment }}-{{ .Values.region }}-aws.internal
-  - {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime-vs-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
+  - {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime-vs.{{ "$root.Values.namespace" }}.bankly-{{ $root.Values.environment }}-{{ $root.Values.region }}-aws.internal
+  - {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime-vs-{{ $root.Values.environment }}-service.{{ $root.Values.namespace }}.svc.cluster.local
   gateways:
-  - {{ .Values.istioGateway.name }}
+  - {{ $root.Values.istioGateway.name }}
   http:
     route:
       - destination:
-          host: {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime-vs-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
-    {{- if eq .Values.istioGateway.retriesEnable true }} 
+          host: {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime-vs-{{ $root.Values.environment }}-service.{{ $root.Values.namespace }}.svc.cluster.local
 {{- end }}
