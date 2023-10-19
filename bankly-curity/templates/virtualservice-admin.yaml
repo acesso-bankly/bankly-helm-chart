@@ -7,7 +7,6 @@ metadata:
   labels:
     {{- include "curity.labels" . | nindent 4 }}
     role: {{ include "curity.fullname" . }}-admin
-  {{- with .Values.curity.admin.annotations }}
 spec:
   hosts:
   - {{ include "curity.fullname" . }}-admin-vs.{{ .Values.namespace }}.bankly-{{ .Values.environment }}-{{ .Values.region }}-aws.internal
@@ -18,5 +17,4 @@ spec:
     route:
       - destination:
           host: {{ include "curity.fullname" . }}-admin-vs-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
-    {{- if eq .Values.istioGateway.retriesEnable true }} 
 {{- end }}
