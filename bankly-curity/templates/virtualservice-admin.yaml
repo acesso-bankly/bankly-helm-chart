@@ -14,7 +14,7 @@ spec:
   gateways:
   - {{ .Values.istioGateway.name }}
   http:
-    route:
-      - destination:
-          host: {{ include "curity.fullname" . }}-admin-vs-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
+  - route:
+    - destination:
+        host: {{ include "curity.fullname" . }}-admin-vs-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local
 {{- end }}
