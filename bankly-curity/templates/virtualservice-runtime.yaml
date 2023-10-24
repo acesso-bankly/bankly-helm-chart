@@ -12,7 +12,7 @@ metadata:
 spec:
   hosts:
   - "{{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime-vs{{ $root.Values.namespace }}.bankly-{{ $root.Values.environment }}-{{ $root.Values.region }}-aws.internal"
-  - "{{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime-vs-{{ $root.Values.environment }}-service.{{ $root.Values.namespace }}svc.cluster.local"
+  - "{{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime-vs-{{ $root.Values.environment }}-service.{{ $root.Values.namespace }}.svc.cluster.local"
   gateways:
   - {{ $root.Values.istioGateway.name }}
   http:
