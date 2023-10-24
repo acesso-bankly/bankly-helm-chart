@@ -9,8 +9,8 @@ metadata:
     role: {{ include "curity.fullname" . }}-admin
 spec:
   hosts:
-  - "{{ include "curity.fullname" . }}-admin-vs.{{ .Values.namespace }}bankly-{{ .Values.environment }}-{{ .Values.region }}-aws.internal"
-  - "{{ include "curity.fullname" . }}-admin-vs-{{ .Values.environment }}-service.{{ .Values.namespace }}svc.cluster.local"
+  - "{{ include "curity.fullname" . }}-admin-vs.{{ .Values.namespace }}.bankly-{{ .Values.environment }}-{{ .Values.region }}-aws.internal"
+  - "{{ include "curity.fullname" . }}-admin-vs-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local"
   gateways:
   - {{ .Values.istioGateway.name }}
   http:
