@@ -16,5 +16,7 @@ spec:
   http:
   - route:
     - destination:
-        host: "{{ include "curity.fullname" . }}-admin-vs-{{ .Values.environment }}-service.{{ .Values.namespace }}svc.cluster.local"
+        host: "{{ include "curity.fullname" . }}-admin-svc.{{ .Values.namespace }}.svc.cluster.local"
 {{- end }}
+
+

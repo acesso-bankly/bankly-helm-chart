@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: {{ include "curity.fullname" . }}-config-backup
+  namespace: {{ .Values.namespace }}
 type: Opaque
 data:
   placeholder: Y3VyaXR5

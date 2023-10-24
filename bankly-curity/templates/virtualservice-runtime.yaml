@@ -18,5 +18,5 @@ spec:
   http:
   - route:
     - destination:
-        host: "{{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime-vs-{{ $root.Values.environment }}-service.{{ $root.Values.namespace }}svc.cluster.local"
+        host: "{{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime-svc.{{ $root.Values.namespace }}.svc.cluster.local"
 {{- end }}

@@ -7,6 +7,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-hpa
+  namespace: {{ $root.Values.namespace }}
   labels:
     {{- include "curity.labels" $root | nindent 4 }}
 spec:
