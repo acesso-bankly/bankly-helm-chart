@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "curity.fullname" . }}-admin-svc
+  namespace: {{ .Values.namespace }}
   labels:
     {{- include "curity.labels" . | nindent 4 }}
     role: {{ include "curity.fullname" . }}-admin
@@ -34,4 +35,3 @@ spec:
     app.kubernetes.io/name: {{ include "curity.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     role: {{ include "curity.fullname" . }}-admin
-    

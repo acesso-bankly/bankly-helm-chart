@@ -3,6 +3,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "curity.fullname" . }}-ingress
+  namespace: {{ .Values.namespace }}
   labels:
         {{- include "curity.labels" . | nindent 4 }}
     {{- if or .Values.ingress.runtime.annotations .Values.ingress.annotations }}
@@ -46,6 +47,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ include "curity.fullname" . }}-ingress-admin
+  namespace: {{ .Values.namespace }}
   labels:
         {{- include "curity.labels" . | nindent 4 }}
     {{- if or .Values.ingress.admin.annotations .Values.ingress.annotations }}

@@ -3,6 +3,7 @@ apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
   name: {{ include "curity.fullname" . }}-network-policy
+  namespace: {{ .Values.namespace }}
 spec:
   podSelector:
     matchLabels:

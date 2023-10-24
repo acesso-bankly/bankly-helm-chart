@@ -7,7 +7,7 @@ revisionHistoryLimit: 10
 awsRoleArn: "change-me"
 environment: staging
 region: us-east-1
-
+namespace: "ids-curity"
 image:
   repository: curity.azurecr.io/curity/idsvr
   tag: 8.3.0
@@ -190,7 +190,9 @@ resources: {}
 istioGateway:
   enable: true
   name: "root-platform-gateway"
+ # name: "platform-gateway"
   namespace: "root-platform"
+#  namespace: "platform"
 
 autoscaling:
   enabled: true
@@ -209,11 +211,11 @@ autoscaling:
 
 postHook:
   enabled: false
-  image: curlimages/curl:latest
-  args: []
+#  image: curlimages/curl:latest
+#  args: []
 #    - -ec
 #    - curl -X POST --data-urlencode 'payload={"username":"HelmRelease","text":"`$(APP_NAME)`, version `$(APP_VERSION)` (`$(CHART_NAME)` ) in `$(RELEASE_NAMESPACE)` has been deployed"}' "$(SLACK_WEBHOOK_URL)"
-  extraEnv: []
+#  extraEnv: []
 #    - name: SLACK_WEBHOOK_URL
 #      valueFrom:
 #        secretKeyRef:

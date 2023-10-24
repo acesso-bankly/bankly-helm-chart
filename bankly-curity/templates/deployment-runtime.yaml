@@ -6,6 +6,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime
+  namespace: {{ $root.Values.namespace }}
   labels:
     {{- include "curity.labels" $root | nindent 4 }}
     role: {{ include "curity.fullname" $root }}-{{ $arrayValue.role }}-runtime
