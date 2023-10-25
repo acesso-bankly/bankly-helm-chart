@@ -19,11 +19,12 @@ fullnameOverride: ""
 labels: {}
 networkpolicy:
   enabled: false
-
+  
 curity:
+  adminUiHttp: true
   healthCheckPort: 4465
   adminUiPort: 6749
-  adminUiHttp: false
+
 
   admin:
     role: admin
@@ -110,7 +111,7 @@ curity:
       resources: {}
 
   config:
-    uiEnabled: false
+    uiEnabled: true
     backup: false
     password: 'Password1'
     skipInstall: false
