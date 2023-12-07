@@ -31,6 +31,20 @@ spec:
         version: canary
         environment: {{ .Values.environment  }}
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                {{- if .Values.isArm64 }}
+                - arm64
+                {{- else }}
+                - amd64
+                {{- end }}
+                
       priorityClassName: {{ .Values.priorityClassName }}
   
       {{- if .Values.volumes }}
@@ -152,6 +166,19 @@ spec:
         version: safe
         environment: {{ .Values.environment }}
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                {{- if .Values.isArm64 }}
+                - arm64
+                {{- else }}
+                - amd64
+                {{- end }}
       priorityClassName: {{ .Values.priorityClassName }}
       {{- if .Values.volumes }}
       volumes:

@@ -2,10 +2,20 @@ apiVersion: v1
 entries:
   bankly-product:
   - apiVersion: v2
-    appVersion: 0.0.19
-    created: "2023-10-17T19:04:54.632967882-03:00"
+    appVersion: 0.0.20
+    created: "2023-12-07T19:17:40.109091323-03:00"
     description: A Helm chart for Kubernetes
-    digest: 00024d4214ddd4581d682f917b773e788c598f7045d57ec3fa3177910ea59fed
+    digest: 5107734a8ee2d77d86949ef77a0317e420f9d1c5b5526997b171aa8a47f125e8
+    name: bankly-product
+    type: application
+    urls:
+    - https://acesso-bankly.github.io/bankly-helm-chart/bankly-product-0.0.20.tgz
+    version: 0.0.20
+  - apiVersion: v2
+    appVersion: 0.0.19
+    created: "2023-12-07T19:17:40.103041706-03:00"
+    description: A Helm chart for Kubernetes
+    digest: cecac732172f6cbb725de6d9921cbb538ad9172f61fb44afb17da237287ec90d
     name: bankly-product
     type: application
     urls:
@@ -13,7 +23,7 @@ entries:
     version: 0.0.19
   - apiVersion: v2
     appVersion: 0.0.18
-    created: "2023-10-17T19:04:54.615455767-03:00"
+    created: "2023-12-07T19:17:40.097817582-03:00"
     description: A Helm chart for Kubernetes
     digest: 3758f8ae7167e2c38967df209c08b142f35323ef9bd0e4b3659005d2ae3a7035
     name: bankly-product
@@ -23,7 +33,7 @@ entries:
     version: 0.0.18
   - apiVersion: v2
     appVersion: 0.0.17
-    created: "2023-10-17T19:04:54.595747834-03:00"
+    created: "2023-12-07T19:17:40.091627065-03:00"
     description: A Helm chart for Kubernetes
     digest: 5086b649fc567d6b730bb9ba60e3f8e43c28f4d5afe579d5bcc14d2d2c4ea3b0
     name: bankly-product
@@ -34,9 +44,9 @@ entries:
   idsvr:
   - apiVersion: v1
     appVersion: 8.3.2
-    created: "2023-10-17T19:04:54.653502537-03:00"
+    created: "2023-12-07T19:17:40.117985871-03:00"
     description: A Helm chart for Curity Identity Server
-    digest: 4473d3e7d0a6a8dca8f7dec15ca32dcae9633ddd2bbdabbd9e3d1f7fa5886880
+    digest: aea238026c4bd0236c34bf93d091b6bd5075e456975993e91a523d21d7861c4a
     home: https://curity.io
     icon: https://curity.io/images/curity-logo-landscape-white.png
     keywords:
@@ -51,4 +61,4 @@ entries:
     urls:
     - https://acesso-bankly.github.io/bankly-helm-chart/idsvr-0.12.8.tgz
     version: 0.12.8
-generated: "2023-10-17T19:04:54.578518904-03:00"
+generated: "2023-12-07T19:17:40.085172413-03:00"
