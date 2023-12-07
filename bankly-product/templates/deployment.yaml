@@ -14,6 +14,7 @@ metadata:
     type: "{{ .Values.tagResources.type }}"
     cc: "{{ .Values.tagResources.cc }}"
     product: "{{ .Values.tagResources.product }}"
+    isArm64: "{{ .Values.isArm64 }}"
 spec:
   {{- if eq .Values.isCanary true }}
   replicas: 1
@@ -44,7 +45,7 @@ spec:
                 {{- else }}
                 - amd64
                 {{- end }}
-                
+
       priorityClassName: {{ .Values.priorityClassName }}
   
       {{- if .Values.volumes }}
@@ -149,6 +150,7 @@ metadata:
     type: "{{ .Values.tagResources.type }}"
     cc: "{{ .Values.tagResources.cc }}"
     product: "{{ .Values.tagResources.product }}"
+    isArm64: "{{ .Values.isArm64 }}"
 spec:
   strategy:
     type: RollingUpdate
