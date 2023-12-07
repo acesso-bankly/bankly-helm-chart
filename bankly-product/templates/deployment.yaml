@@ -156,6 +156,19 @@ spec:
       {{- if eq .Values.serviceAccount.enabled true }}      
       serviceAccountName: {{ .Values.service.name }}-{{ .Values.environment  }}-serviceaccount
       {{- end }}
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                {{- if .Values.isArm64 }}
+                - arm64
+                {{- else }}
+                - amd64
+                {{- end }}
       containers:
         - name: {{ .Values.service.name }}-pod
           image: {{ .Values.containerImage }}
