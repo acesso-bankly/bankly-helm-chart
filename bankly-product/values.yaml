@@ -3,6 +3,7 @@ namespace: default
 isCanary: false
 environment: staging
 region: us-east-1
+isArm64: true
 
 service:
   name: default-service
