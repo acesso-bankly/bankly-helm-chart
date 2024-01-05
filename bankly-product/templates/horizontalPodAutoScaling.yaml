@@ -1,13 +1,13 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ .Release.Name }}-{{ .Values.environment }}-hpa
+  name: {{ .Values.service.name }}-{{ .Values.environment  }}-hpa
   namespace: {{ .Values.namespace }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ .Release.Name }}-{{ .Values.environment  }}-deployment
+    name: {{ .Values.service.name }}-{{ .Values.environment  }}-deployment
   {{- if or (eq .Values.environment "production") (eq .Values.environment "sandbox") }}
   minReplicas: {{ .Values.hpa.minReplicas }}
   maxReplicas: {{ .Values.hpa.maxReplicas }}
