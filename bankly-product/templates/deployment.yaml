@@ -1,8 +1,8 @@
-{{- if eq .Values.environment "production" }}
+{{- if or (eq .Values.environment "production") (eq .Values.environment "sandbox") }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-{{ .Values.environment  }}-deployment-canary
+  name: {{ .Values.service.name }}-{{ .Values.environment  }}-deployment-canary
   namespace: {{ .Values.namespace }}
   labels:
     app: application-bankly
@@ -29,8 +29,9 @@ spec:
     metadata:
       labels:
         app: {{ .Values.service.name }}
-        version: canary
         environment: {{ .Values.environment  }}
+        version: canary
+        isArm64: {{ .Values.isArm64 }}
     spec:
       affinity:
         nodeAffinity:
@@ -138,7 +139,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-{{ .Values.environment  }}-deployment
+  name: {{ .Values.service.name }}-{{ .Values.environment  }}-deployment
   namespace: {{ .Values.namespace }}
   labels:
     app: application-bankly
@@ -165,8 +166,9 @@ spec:
     metadata:
       labels:
         app: {{ .Values.service.name }}
-        version: safe
         environment: {{ .Values.environment }}
+        version: safe
+        isArm64: {{ .Values.isArm64 }}
     spec:
       affinity:
         nodeAffinity:
