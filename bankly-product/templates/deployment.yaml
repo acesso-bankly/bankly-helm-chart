@@ -31,7 +31,7 @@ spec:
         app: {{ .Values.service.name }}
         environment: {{ .Values.environment  }}
         version: canary
-        isArm64: {{ .Values.isArm64 }}
+        isArm64: "{{ .Values.isArm64 }}"
     spec:
       affinity:
         nodeAffinity:
@@ -168,7 +168,7 @@ spec:
         app: {{ .Values.service.name }}
         environment: {{ .Values.environment }}
         version: safe
-        isArm64: {{ .Values.isArm64 }}
+        isArm64: "{{ .Values.isArm64 }}"
     spec:
       affinity:
         nodeAffinity:
