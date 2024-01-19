@@ -9,6 +9,7 @@ service:
   name: default-service
 
 containerImage: nginx:last
+containerPort: 80
 
 priorityClassName: medium-priority
  
@@ -39,6 +40,12 @@ hpa:
   memoryAverageUtilization: 70
   minReplicas: 2
   maxReplicas: 15
+
+hpaKeda:
+  pollingInterval: 20
+  minReplicaCount: 2
+  maxReplicaCount: 10 
+  triggers: {}
 
 volumes: {}
 volumeMounts: {}
