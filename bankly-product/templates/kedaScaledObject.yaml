@@ -1,0 +1,17 @@
+{{- if .Values.hpaKeda.triggers }}
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ .Values.service.name }}-{{ .Values.environment  }}-scaledobject
+  namespace: {{ .Values.namespace }}
+  labels:
+    deploymentName: {{ .Values.service.name }}-{{ .Values.environment  }}-deployment
+spec:
+  scaleTargetRef:
+    name: {{ .Values.service.name }}-{{ .Values.environment  }}-deployment
+  pollingInterval: {{ .Values.hpaKeda.pollingInterval }}
+  minReplicaCount: {{ .Values.hpaKeda.minReplicaCount }}
+  maxReplicaCount: {{ .Values.hpaKeda.maxReplicaCount }}
+  triggers:
+    {{- toYaml .Values.hpaKeda.triggers | nindent 12 }}
+{{- end }}

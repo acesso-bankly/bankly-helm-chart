@@ -41,6 +41,12 @@ hpa:
   minReplicas: 2
   maxReplicas: 15
 
+hpaKeda:
+  pollingInterval: 20
+  minReplicaCount: 2
+  maxReplicaCount: 10 
+  triggers: {}
+
 volumes: {}
 volumeMounts: {}
 
