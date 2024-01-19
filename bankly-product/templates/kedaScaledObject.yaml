@@ -13,5 +13,5 @@ spec:
   minReplicaCount: {{ .Values.hpaKeda.minReplicaCount }}
   maxReplicaCount: {{ .Values.hpaKeda.maxReplicaCount }}
   triggers:
-    {{- toYaml .Values.hpaKeda.triggers | nindent 12 }}
+{{- toYaml .Values.hpaKeda.triggers | nindent 12 }}
 {{- end }}
