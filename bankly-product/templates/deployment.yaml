@@ -83,8 +83,8 @@ spec:
           env:
             - name: SERVICE_NAME
               value: {{ .Values.service.name }}
-            # - name: SERVICE_VERSION
-            #   value: {{ ( splitList ":" .Values.containerImage ) | last }}
+            - name: SERVICE_VERSION
+              value: {{ ( splitList ":" .Values.containerImage ) | last }}
             - name: AWS_REGION
               value: {{ .Values.region }}
 
