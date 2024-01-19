@@ -9,6 +9,7 @@ service:
   name: default-service
 
 containerImage: nginx:last
+containerPort: 80
 
 priorityClassName: medium-priority
  

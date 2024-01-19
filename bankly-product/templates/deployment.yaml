@@ -64,7 +64,7 @@ spec:
 
           ports:
           - name: http
-            containerPort: 80
+            containerPort: {{ .Values.containerPort }}
             protocol: TCP
 
           {{- if .Values.volumeMounts }}
@@ -83,8 +83,10 @@ spec:
           env:
             - name: SERVICE_NAME
               value: {{ .Values.service.name }}
-            - name: SERVICE_VERSION
-              value: {{ ( splitList ":" .Values.containerImage ) | last }}
+            # - name: SERVICE_VERSION
+            #   value: {{ ( splitList ":" .Values.containerImage ) | last }}
+            - name: AWS_REGION
+              value: {{ .Values.region }}
 
           {{- if eq .Values.environment "staging" }}
             - name: ASPNETCORE_ENVIRONMENT
@@ -198,7 +200,7 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
-              containerPort: 80
+              containerPort: {{ .Values.containerPort }}
               protocol: TCP 
           
           {{- if .Values.volumeMounts }}
@@ -216,8 +218,8 @@ spec:
           env:
             - name: SERVICE_NAME
               value: {{ .Values.service.name }}
-            - name: SERVICE_VERSION
-              value: {{ ( splitList ":" .Values.containerImage ) | last }}
+            # - name: SERVICE_VERSION
+            #   value: {{ ( splitList ":" .Values.containerImage ) | last }}
 
           {{- if eq .Values.environment "staging" }}
             - name: ASPNETCORE_ENVIRONMENT
