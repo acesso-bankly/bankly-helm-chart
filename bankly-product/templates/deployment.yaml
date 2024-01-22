@@ -87,6 +87,8 @@ spec:
               value: {{ ( splitList ":" .Values.containerImage ) | last }}
             - name: AWS_REGION
               value: {{ .Values.region }}
+            - name: AWS_DEFAULT_REGION
+              value: {{ .Values.region }}
 
           {{- if eq .Values.environment "staging" }}
             - name: ASPNETCORE_ENVIRONMENT
@@ -221,6 +223,8 @@ spec:
             - name: SERVICE_VERSION
               value: {{ ( splitList ":" .Values.containerImage ) | last }}
             - name: AWS_REGION
+              value: {{ .Values.region }}
+            - name: AWS_DEFAULT_REGION
               value: {{ .Values.region }}
 
           {{- if eq .Values.environment "staging" }}
