@@ -10,8 +10,16 @@ spec:
   scaleTargetRef:
     name: {{ .Values.service.name }}-{{ .Values.environment  }}-deployment
   pollingInterval: {{ .Values.hpaKeda.pollingInterval }}
+  {{- if eq .Values.environment "production" }}
   minReplicaCount: {{ .Values.hpaKeda.minReplicaCount }}
   maxReplicaCount: {{ .Values.hpaKeda.maxReplicaCount }}
+  {{- else if eq .Values.environment "sandbox" }}
+  minReplicaCount: 2
+  maxReplicaCount: 4
+  {{- else }}
+  minReplicaCount: 1
+  maxReplicaCount: 4
+  {{- end }}
   triggers:
 {{- toYaml .Values.hpaKeda.triggers | nindent 12 }}
 {{- end }}
