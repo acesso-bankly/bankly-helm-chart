@@ -8,9 +8,12 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ .Values.service.name }}-{{ .Values.environment  }}-deployment
-  {{- if or (eq .Values.environment "production") (eq .Values.environment "sandbox") }}
+  {{- if eq .Values.environment "production" }}
   minReplicas: {{ .Values.hpa.minReplicas }}
   maxReplicas: {{ .Values.hpa.maxReplicas }}
+  {{- else if eq .Values.environment "sandbox" }}
+  minReplicas: 2
+  maxReplicas: 4
   {{- else }}
   minReplicas: 1
   maxReplicas: 4
