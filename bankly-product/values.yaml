@@ -26,14 +26,18 @@ livenessProbe:
     path: /hc
     port: 80
   initialDelaySeconds: 30
-  periodSeconds: 5
+  periodSeconds: 30
+  failureThreshold: 3
+  timeoutSeconds: 5
 
 readinessProbe:
   httpGet:
-    path: /hc
+    path: /liveness
     port: 80
   initialDelaySeconds: 45
   periodSeconds: 5
+  failureThreshold: 3
+  timeoutSeconds: 5
 
 hpa:
   cpuAverageUtilization: 70
