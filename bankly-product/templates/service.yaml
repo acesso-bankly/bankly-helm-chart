@@ -3,8 +3,6 @@ kind: Service
 metadata:
   name: {{ .Values.service.name }}-{{ .Values.environment  }}-service
   namespace: {{ .Values.namespace }}
-  annotations:
-    "helm.sh/resource-policy": keep
   labels:
     app: application-bankly
     helm-package: bankly-product

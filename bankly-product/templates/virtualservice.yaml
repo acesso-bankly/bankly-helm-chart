@@ -4,8 +4,6 @@ kind: VirtualService
 metadata:
   name:  {{ .Values.service.name }}-{{ .Values.namespace }}-{{ .Values.environment  }}-vs
   namespace: {{ .Values.istioGateway.namespace }}
-  annotations:
-    "helm.sh/resource-policy": keep
   labels:  
     app: application-bankly
     helm-package: bankly-product
