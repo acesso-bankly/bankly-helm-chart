@@ -1,4 +1,4 @@
-{{- if or (eq .Values.enviroment "production") (eq .Values.enviroment "sandbox") }}
+{{- if or (eq .Values.environment "production") (eq .Values.environment "sandbox") }}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
