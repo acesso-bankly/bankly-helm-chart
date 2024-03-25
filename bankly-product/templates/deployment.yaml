@@ -26,6 +26,9 @@ spec:
       app: {{ .Values.service.name }}
       environment: {{ .Values.environment  }}
   template:
+    spec:
+      nodeSelector:
+        type: "{{ .Values.tagResources.context }}"
     metadata:
       labels:
         app: {{ .Values.service.name }}
