@@ -33,6 +33,8 @@ spec:
         version: canary
         isArm64: "{{ .Values.isArm64 }}"
     spec:
+      nodeSelector:
+        type: "{{ .Values.tagResources.context }}"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -174,6 +176,8 @@ spec:
         version: safe
         isArm64: "{{ .Values.isArm64 }}"
     spec:
+      nodeSelector:
+        type: "{{ .Values.tagResources.context }}"    
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
