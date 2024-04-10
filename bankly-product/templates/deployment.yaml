@@ -147,6 +147,10 @@ kind: Deployment
 metadata:
   name: {{ .Values.service.name }}-{{ .Values.environment  }}-deployment
   namespace: {{ .Values.namespace }}
+  annotations:
+    # helm deletes the object is present due to above "if not" condition
+    # add annotation to keep the object
+    helm.sh/resource-policy: keep
   labels:
     app: application-bankly
     helm-package: bankly-product
@@ -158,6 +162,7 @@ metadata:
     cc: "{{ .Values.tagResources.cc }}"
     product: "{{ .Values.tagResources.product }}"
     isArm64: "{{ .Values.isArm64 }}"
+    
 spec:
   strategy:
     type: RollingUpdate
