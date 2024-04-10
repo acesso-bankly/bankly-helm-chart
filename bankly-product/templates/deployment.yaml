@@ -10,7 +10,7 @@ metadata:
     release: {{ .Release.Name }}
     environment: {{ .Values.environment  }}
    
-    context: "{{ .Values.tagResources.context }}"
+    context: "{{ lower .Values.tagResources.context }}"
     type: "{{ .Values.tagResources.type }}"
     cc: "{{ .Values.tagResources.cc }}"
     product: "{{ .Values.tagResources.product }}"
@@ -34,7 +34,7 @@ spec:
         isArm64: "{{ .Values.isArm64 }}"
     spec:
       nodeSelector:
-        bankly.com/context: "{{ .Values.tagResources.context }}"
+        bankly.com/context: "{{ lower .Values.tagResources.context }}"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -157,7 +157,7 @@ metadata:
     release: {{ .Release.Name }}
     environment: {{ .Values.environment  }}
 
-    context: "{{ .Values.tagResources.context }}"
+    context: "{{ lower .Values.tagResources.context }}"
     type: "{{ .Values.tagResources.type }}"
     cc: "{{ .Values.tagResources.cc }}"
     product: "{{ .Values.tagResources.product }}"
@@ -182,7 +182,7 @@ spec:
         isArm64: "{{ .Values.isArm64 }}"
     spec:
       nodeSelector:
-        bankly.com/context: "{{ .Values.tagResources.context }}"
+        bankly.com/context: "{{ lower .Values.tagResources.context }}"
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
