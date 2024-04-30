@@ -1,6 +1,6 @@
 {{- if eq .Values.cronjobs.jobOnly false }}
 {{- if or (eq .Values.environment "production") (eq .Values.environment "sandbox") }}
-apiVersion: apps/v1
+apiVersion: apps/v2
 kind: Deployment
 metadata:
   name: {{ .Values.service.name }}-{{ .Values.environment  }}-deployment-canary
@@ -56,6 +56,8 @@ spec:
                 {{- else }}
                 - amd64
                 {{- end }}
+      nodeSelector:
+            bankly.com/context: "{{ lower $.Values.tagResources.context }}"
 
       priorityClassName: {{ .Values.priorityClassName }}
   

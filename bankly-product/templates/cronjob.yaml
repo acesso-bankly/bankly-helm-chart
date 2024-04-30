@@ -14,6 +14,15 @@ spec:
         metadata:
           labels:
             cron: {{ $jobname }}-{{ $.Values.environment }}-cronjob
+            app: cronjob-bankly
+            helm-package: bankly-product
+            release: {{ $.Release.Name }}
+            environment: {{ $.Values.environment  }}
+            context: "{{ $.Values.tagResources.context }}"
+            type: "{{ $.Values.tagResources.type }}"
+            cc: "{{ $.Values.tagResources.cc }}"
+            product: "{{ $.Values.tagResources.product }}"
+            isArm64: "{{ $.Values.isArm64 }}"
         spec:
           topologySpreadConstraints:
           - maxSkew: 1
@@ -37,8 +46,6 @@ spec:
                     {{- else }}
                     - amd64
                     {{- end }}
-          nodeSelector:
-            bankly.com/context: "{{ lower $.Values.tagResources.context }}"
       {{- if eq $.Values.serviceAccount.enabled true }}      
           serviceAccountName: {{ $.Values.service.name }}-{{ $.Values.environment  }}-serviceaccount
       {{- end }}
