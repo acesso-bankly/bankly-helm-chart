@@ -1,6 +1,0 @@
-{
-"applicationName": "{{ .Values.service.name }}",
-"jobs": {{- range $jobname, $job := .Values.jobs -}}
-     "{{ $jobname }}",
-     {{- end -}}
-}

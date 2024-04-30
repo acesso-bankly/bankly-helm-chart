@@ -1,3 +1,4 @@
+{{- if eq .Values.cronjobs.jobOnly false }}
 {{- if or (eq .Values.environment "production") (eq .Values.environment "sandbox") }}
 apiVersion: apps/v1
 kind: Deployment
@@ -297,4 +298,5 @@ spec:
           {{- toYaml .Values.productionEnvironment | nindent 12 }}
           {{- end }}      
           {{- end }}      
+{{- end }}
 {{- end }}
