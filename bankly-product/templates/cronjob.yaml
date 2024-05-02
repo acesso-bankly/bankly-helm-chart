@@ -1,4 +1,4 @@
-{{ if .Values.cronjobs.enabled }}
+{{ if .Values.cronjobs.enable }}
 {{- range $jobname, $job := .Values.cronjobs.jobs }}
 ---
 apiVersion: batch/v1

@@ -92,6 +92,6 @@ podDisruptionBudget:
   minAvailable: 2
 
 cronjobs:
-  enabled: false
+  enable: false
   jobOnly: false
   jobs: {}
