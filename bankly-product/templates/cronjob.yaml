@@ -5,6 +5,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: {{ $jobname }}-{{ $.Values.environment }}-cronjob
+  namespace: {{ $.Values.namespace }}
 spec:
   concurrencyPolicy: {{ $job.concurrencyPolicy }}
   failedJobsHistoryLimit: {{ $job.failedJobsHistoryLimit }}
@@ -24,15 +25,6 @@ spec:
             product: "{{ $.Values.tagResources.product }}"
             isArm64: "{{ $.Values.isArm64 }}"
         spec:
-          topologySpreadConstraints:
-          - maxSkew: 1
-            topologyKey: topology.kubernetes.io/zone
-            whenUnsatisfiable: DoNotSchedule
-            labelSelector:
-              matchLabels:
-                app: {{ $.Values.service.name }}
-                environment: {{ $.Values.environment  }}
-
           affinity:
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
