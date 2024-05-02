@@ -213,6 +213,9 @@ spec:
                 {{- else }}
                 - amd64
                 {{- end }}
+      nodeSelector:
+            bankly.com/context: "{{ lower $.Values.tagResources.context }}"
+            
       priorityClassName: {{ .Values.priorityClassName }}
       {{- if .Values.volumes }}
       volumes:
