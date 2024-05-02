@@ -5,6 +5,11 @@ metadata:
   namespace: {{ .Values.istioGateway.namespace }}
 spec:
   host: {{ .Values.service.name }}-{{ .Values.environment  }}-service.{{ .Values.namespace }}.svc.cluster.local
+  trafficPolicy:
+    outlierDetection:
+      consecutive5xxErrors: 1
+      interval: 10s
+      baseEjectionTime: 30s
   subsets:
   - name: safe
     labels:
