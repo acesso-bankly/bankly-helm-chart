@@ -1,0 +1,135 @@
+{{ if .Values.cronjobs.enable }}
+{{- range $jobname, $job := .Values.cronjobs.jobs }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ $jobname }}-{{ $.Values.environment }}-cronjob
+  namespace: {{ $.Values.namespace }}
+spec:
+  concurrencyPolicy: {{ $job.concurrencyPolicy }}
+  failedJobsHistoryLimit: {{ $job.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            cron: {{ $jobname }}-{{ $.Values.environment }}-cronjob
+            app: cronjob-bankly
+            helm-package: bankly-product
+            release: {{ $.Release.Name }}
+            environment: {{ $.Values.environment  }}
+            context: "{{ $.Values.tagResources.context }}"
+            type: "{{ $.Values.tagResources.type }}"
+            cc: "{{ $.Values.tagResources.cc }}"
+            product: "{{ $.Values.tagResources.product }}"
+            isArm64: "{{ $.Values.isArm64 }}"
+        spec:
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: kubernetes.io/arch
+                    operator: In
+                    values:
+                    {{- if $.Values.isArm64 }}
+                    - arm64
+                    {{- else }}
+                    - amd64
+                    {{- end }}
+      {{- if eq $.Values.serviceAccount.enabled true }}      
+          serviceAccountName: {{ $.Values.service.name }}-{{ $.Values.environment  }}-serviceaccount
+      {{- end }}
+          containers:
+          - name: {{ $jobname }}-job-pod
+            image: {{ $.Values.containerImage }}
+            imagePullPolicy: IfNotPresent
+            {{- with $job.command }}
+            command:
+{{ toYaml . | indent 12 }}
+            {{- end }}
+
+            {{- with $job.envFrom }}
+            envFrom:
+{{ toYaml . | indent 12 }}
+            {{- end }}
+            
+            
+            {{- with $job.volumeMounts }}
+            volumeMounts:
+{{ toYaml . | indent 12 }}
+            {{- end }}
+            env:
+            - name: SERVICE_NAME
+              value: {{ $jobname }}-cronjob
+            - name: AWS_REGION
+              value: {{ $.Values.region }}
+            - name: AWS_DEFAULT_REGION
+              value: {{ $.Values.region }}
+
+          {{- if eq $.Values.environment "staging" }}
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Staging-{{ $.Values.region }}"
+            - name: DOTNETCORE_ENVIRONMENT
+              value: "Staging-{{ $.Values.region }}"
+            - name: NODE_ENV
+              value: "staging-{{ $.Values.region }}"
+          {{- if $.Values.stagingEnvironment }}
+          {{- toYaml $.Values.stagingEnvironment | nindent 12 }}
+          {{- end }}
+          {{- end }}
+          
+          {{- if eq $.Values.environment "testing" }}
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Testing-{{ $.Values.region }}"
+            - name: DOTNETCORE_ENVIRONMENT
+              value: "Testing-{{ $.Values.region }}"
+            - name: NODE_ENV
+              value: "testing-{{ $.Values.region }}"
+          {{- if $.Values.testingEnvironment }}
+          {{- toYaml $.Values.testingEnvironment | nindent 12 }}
+          {{- end }}
+          {{- end }}
+          
+          {{- if eq $.Values.environment "sandbox" }}
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Sandbox-{{ $.Values.region }}"
+            - name: DOTNETCORE_ENVIRONMENT
+              value: "Sandbox-{{ $.Values.region }}"
+            - name: NODE_ENV
+              value: "sandbox-{{ $.Values.region }}"
+          {{- if $.Values.sandboxEnvironment }}
+          {{- toYaml $.Values.sandboxEnvironment | nindent 12 }}
+          {{- end }}
+          {{- end }}
+          
+          {{- if (eq $.Values.environment "production") }}
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production-{{ $.Values.region }}"
+            - name: DOTNETCORE_ENVIRONMENT
+              value: "Production-{{ $.Values.region }}"
+            - name: NODE_ENV
+              value: "production-{{ $.Values.region }}"
+          {{- if $.Values.productionEnvironment }}          
+          {{- toYaml $.Values.productionEnvironment | nindent 12 }}
+          {{- end }}      
+          {{- end }}     
+        
+          {{- with $job.affinity }}
+          affinity:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          {{- with $job.tolerations }}
+          tolerations:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          restartPolicy: {{ $job.restartPolicy }}
+          {{- with $job.volumes }}
+          volumes:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+  schedule: {{ $job.schedule | quote }}
+  successfulJobsHistoryLimit: {{ $job.successfulJobsHistoryLimit }}
+{{- end }}
+{{- end }}

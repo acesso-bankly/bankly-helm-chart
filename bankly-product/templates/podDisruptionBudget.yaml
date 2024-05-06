@@ -1,3 +1,4 @@
+{{- if eq .Values.cronjobs.jobOnly false }}
 {{- if or (eq .Values.environment "production") (eq .Values.environment "sandbox") }}
 apiVersion: policy/v1
 kind: PodDisruptionBudget
@@ -9,4 +10,5 @@ spec:
   selector:
     matchLabels:
       app: {{ .Values.service.name }}
+{{- end }}
 {{- end }}

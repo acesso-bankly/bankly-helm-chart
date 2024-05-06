@@ -1,3 +1,4 @@
+{{- if eq .Values.cronjobs.jobOnly false }}
 {{- if or (eq .Values.environment "production") (eq .Values.environment "sandbox") }}
 apiVersion: apps/v1
 kind: Deployment
@@ -55,6 +56,8 @@ spec:
                 {{- else }}
                 - amd64
                 {{- end }}
+      nodeSelector:
+            bankly.com/context: "{{ lower $.Values.tagResources.context }}"
 
       priorityClassName: {{ .Values.priorityClassName }}
   
@@ -210,6 +213,9 @@ spec:
                 {{- else }}
                 - amd64
                 {{- end }}
+      nodeSelector:
+            bankly.com/context: "{{ lower $.Values.tagResources.context }}"
+            
       priorityClassName: {{ .Values.priorityClassName }}
       {{- if .Values.volumes }}
       volumes:
@@ -297,4 +303,5 @@ spec:
           {{- toYaml .Values.productionEnvironment | nindent 12 }}
           {{- end }}      
           {{- end }}      
+{{- end }}
 {{- end }}

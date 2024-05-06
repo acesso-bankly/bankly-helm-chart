@@ -1,3 +1,4 @@
+{{- if eq .Values.cronjobs.jobOnly false }}
 {{- if eq .Values.istioGateway.enable true }} 
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -46,4 +47,5 @@ spec:
     retries:
     {{- toYaml .Values.istioGateway.retries | nindent 12 }}
     {{- end }}
+{{- end }}
 {{- end }}
