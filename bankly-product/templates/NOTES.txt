@@ -2,8 +2,6 @@
 "applicationName": "{{ .Values.service.name }}",
 "containerImage": "{{ .Values.containerImage }}",
 "externalUrl": "{{ .Values.service.name }}.{{ .Values.namespace }}.bankly-{{ .Values.environment }}-{{ .Values.region }}-aws.internal",
-"internalUrl": "{{ .Values.service.name }}-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local",
-"cronjobs": {{- range $jobname, $job := .Values.cronjobs.jobs -}}
-     "{{ $jobname }}",
-     {{- end -}}
+"internalUrl": "{{ .Values.service.name }}-{{ .Values.environment }}-service.{{ .Values.namespace }}.svc.cluster.local"
+
 }
