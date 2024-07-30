@@ -1,16 +1,16 @@
 apiVersion: v1
 entries:
   bankly-product:
-  - apiVersion: v2
-    appVersion: 0.0.33
-    created: "2024-07-30T12:01:38.3134552-03:00"
-    description: A Helm chart for Kubernetes
-    digest: 7eeeddc58a45f257204f48ef67c1104be92089dc9fa1719de6d64098a508d81e
-    name: bankly-product
-    type: application
-    urls:
-    - https://acesso-bankly.github.io/bankly-helm-chart/bankly-product-0.0.33.tgz
-    version: 0.0.33
+  # - apiVersion: v2
+  #   appVersion: 0.0.33
+  #   created: "2024-07-30T12:01:38.3134552-03:00"
+  #   description: A Helm chart for Kubernetes
+  #   digest: 7eeeddc58a45f257204f48ef67c1104be92089dc9fa1719de6d64098a508d81e
+  #   name: bankly-product
+  #   type: application
+  #   urls:
+  #   - https://acesso-bankly.github.io/bankly-helm-chart/bankly-product-0.0.33.tgz
+  #   version: 0.0.33
   - apiVersion: v2
     appVersion: 0.0.32
     created: "2024-07-30T12:01:38.3107563-03:00"
