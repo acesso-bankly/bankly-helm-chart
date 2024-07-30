@@ -95,3 +95,6 @@ cronjobs:
   enable: false
   jobOnly: false
   jobs: {}
+
+
+observabilityInjectionType: 'none' #none, datadog

@@ -16,6 +16,11 @@ metadata:
     cc: "{{ .Values.tagResources.cc }}"
     product: "{{ .Values.tagResources.product }}"
     isArm64: "{{ .Values.isArm64 }}"
+    {{- if eq .Values.observabilityInjectionType "datadog" }}
+    tags.datadoghq.com/env: "{{ .Values.environment }}"
+    tags.datadoghq.com/service: "{{ .Values.service.name }}"
+    tags.datadoghq.com/version: "{{ ( splitList ":" .Values.containerImage ) | last }}"
+    {{- end }}    
 spec:
   {{- if eq .Values.isCanary true }}
   replicas: 1
@@ -33,6 +38,16 @@ spec:
         environment: {{ .Values.environment  }}
         version: canary
         isArm64: "{{ .Values.isArm64 }}"
+        {{- if eq .Values.observabilityInjectionType "datadog" }}
+        tags.datadoghq.com/env: "{{ .Values.environment }}"
+        tags.datadoghq.com/service: "{{ .Values.service.name }}"
+        tags.datadoghq.com/version: "{{ ( splitList ":" .Values.containerImage ) | last }}"
+        admission.datadoghq.com/enabled: "true"
+        {{- end }}
+      annotations:
+        {{- if eq .Values.observabilityInjectionType "datadog" }}
+        admission.datadoghq.com/dotnet-lib.version: v2.56.0
+        {{- end }}
     spec:
       topologySpreadConstraints:
       - maxSkew: 1
@@ -148,7 +163,14 @@ spec:
           {{- if .Values.productionEnvironment }}          
           {{- toYaml .Values.productionEnvironment | nindent 12 }}
           {{- end }}      
-          {{- end }}         
+          {{- end }}
+          
+          {{- if eq .Values.observabilityInjectionType "datadog" }}
+            - name: DD_LOGS_INJECTION
+              value: "true"
+            - name: DD_RUNTIME_METRICS_ENABLED
+              value: "true"
+          {{- end }}
 {{- end }}
 ---
 {{- if eq .Values.isCanary false }}
@@ -172,7 +194,11 @@ metadata:
     cc: "{{ .Values.tagResources.cc }}"
     product: "{{ .Values.tagResources.product }}"
     isArm64: "{{ .Values.isArm64 }}"
-    
+    {{- if eq .Values.observabilityInjectionType "datadog" }}
+    tags.datadoghq.com/env: "{{ .Values.environment }}"
+    tags.datadoghq.com/service: "{{ .Values.service.name }}"
+    tags.datadoghq.com/version: "{{ ( splitList ":" .Values.containerImage ) | last }}"
+    {{- end }} 
 spec:
   strategy:
     type: RollingUpdate
@@ -190,6 +216,16 @@ spec:
         environment: {{ .Values.environment }}
         version: safe
         isArm64: "{{ .Values.isArm64 }}"
+        {{- if eq .Values.observabilityInjectionType "datadog" }}
+        tags.datadoghq.com/env: "{{ .Values.environment }}"
+        tags.datadoghq.com/service: "{{ .Values.service.name }}"
+        tags.datadoghq.com/version: "{{ ( splitList ":" .Values.containerImage ) | last }}"
+        admission.datadoghq.com/enabled: "true"
+        {{- end }}
+      annotations:
+        {{- if eq .Values.observabilityInjectionType "datadog" }}
+        admission.datadoghq.com/dotnet-lib.version: v2.56.0
+        {{- end }}
     spec:
       topologySpreadConstraints:
       - maxSkew: 1
@@ -302,6 +338,13 @@ spec:
           {{- if .Values.productionEnvironment }}          
           {{- toYaml .Values.productionEnvironment | nindent 12 }}
           {{- end }}      
-          {{- end }}      
+          {{- end }}
+
+          {{- if eq .Values.observabilityInjectionType "datadog" }}
+            - name: DD_LOGS_INJECTION
+              value: "true"
+            - name: DD_RUNTIME_METRICS_ENABLED
+              value: "true"
+          {{- end }}  
 {{- end }}
 {{- end }}
