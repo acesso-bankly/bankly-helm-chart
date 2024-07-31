@@ -46,7 +46,7 @@ spec:
         {{- end }}
       annotations:
         {{- if eq .Values.observabilityInjectionType "datadog" }}
-        admission.datadoghq.com/dotnet-lib.version: v2.56.0
+        admission.datadoghq.com/dotnet-lib.version: v2.56.0-musl
         {{- end }}
     spec:
       topologySpreadConstraints:
@@ -224,7 +224,7 @@ spec:
         {{- end }}
       annotations:
         {{- if eq .Values.observabilityInjectionType "datadog" }}
-        admission.datadoghq.com/dotnet-lib.version: v2.56.0
+        admission.datadoghq.com/dotnet-lib.version: v2.56.0-musl
         {{- end }}
     spec:
       topologySpreadConstraints:
