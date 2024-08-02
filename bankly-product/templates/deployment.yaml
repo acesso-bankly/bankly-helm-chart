@@ -18,7 +18,7 @@ metadata:
     isArm64: "{{ .Values.isArm64 }}"
     {{- if eq .Values.observabilityInjectionType "datadog" }}
     tags.datadoghq.com/env: "{{ .Values.environment }}"
-    tags.datadoghq.com/service: "{{ .Values.service.name }}"
+    tags.datadoghq.com/service: "{{ .Values.service.name }}-{{ .Values.namespace }}"
     tags.datadoghq.com/version: "{{ ( splitList ":" .Values.containerImage ) | last }}"
     {{- end }}    
 spec:
@@ -40,7 +40,7 @@ spec:
         isArm64: "{{ .Values.isArm64 }}"
         {{- if eq .Values.observabilityInjectionType "datadog" }}
         tags.datadoghq.com/env: "{{ .Values.environment }}"
-        tags.datadoghq.com/service: "{{ .Values.service.name }}"
+        tags.datadoghq.com/service: "{{ .Values.service.name }}-{{ .Values.namespace }}"
         tags.datadoghq.com/version: "{{ ( splitList ":" .Values.containerImage ) | last }}"
         admission.datadoghq.com/enabled: "true"
         {{- end }}
@@ -196,7 +196,7 @@ metadata:
     isArm64: "{{ .Values.isArm64 }}"
     {{- if eq .Values.observabilityInjectionType "datadog" }}
     tags.datadoghq.com/env: "{{ .Values.environment }}"
-    tags.datadoghq.com/service: "{{ .Values.service.name }}"
+    tags.datadoghq.com/service: "{{ .Values.service.name }}-{{ .Values.namespace }}"
     tags.datadoghq.com/version: "{{ ( splitList ":" .Values.containerImage ) | last }}"
     {{- end }} 
 spec:
@@ -218,7 +218,7 @@ spec:
         isArm64: "{{ .Values.isArm64 }}"
         {{- if eq .Values.observabilityInjectionType "datadog" }}
         tags.datadoghq.com/env: "{{ .Values.environment }}"
-        tags.datadoghq.com/service: "{{ .Values.service.name }}"
+        tags.datadoghq.com/service: "{{ .Values.service.name }}-{{ .Values.namespace }}"
         tags.datadoghq.com/version: "{{ ( splitList ":" .Values.containerImage ) | last }}"
         admission.datadoghq.com/enabled: "true"
         {{- end }}
