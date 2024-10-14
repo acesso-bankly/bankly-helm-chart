@@ -15,35 +15,36 @@ priorityClassName: medium-priority
 
 resources:
   limits:
-    cpu: 100m
-    memory: 128Mi
+    memory: 512Mi
   requests:
-    cpu: 100m
+    cpu: 60m
     memory: 128Mi
 
 livenessProbe:
   httpGet:
     path: /hc
     port: 80
-  initialDelaySeconds: 30
+  initialDelaySeconds: 60
   periodSeconds: 30
   failureThreshold: 3
   timeoutSeconds: 5
+  successThreshold: 1
 
 readinessProbe:
   httpGet:
     path: /liveness
     port: 80
-  initialDelaySeconds: 45
-  periodSeconds: 5
+  initialDelaySeconds: 30
+  periodSeconds: 15
   failureThreshold: 3
   timeoutSeconds: 5
+  successThreshold: 1
 
 hpa:
   cpuAverageUtilization: 70
-  memoryAverageUtilization: 70
-  minReplicas: 2
-  maxReplicas: 15
+  memoryAverageUtilization: 90
+  minReplicas: 3
+  maxReplicas: 10
 
 hpaKeda:
   pollingInterval: 20
